@@ -562,7 +562,7 @@ namespace Deluxia.Random
             _INextP = locINextp;
             timesRandomized++;
             if(debug){
-                UnityEngine.Debug.LogError(timesRandomized);
+                Console.WriteLine(timesRandomized);
             }
             return retVal;
         }
