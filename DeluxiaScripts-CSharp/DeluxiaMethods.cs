@@ -176,6 +176,18 @@ namespace Deluxia{
 		/// </summary>
 		/// <param name="list"></param>
 		/// <returns></returns>
+		public static long GetSum(this IEnumerable<long> list){
+			long total = 0;
+			foreach(long num in list){
+				total += num;
+			}
+			return total;
+		}
+		/// <summary>
+		/// Takes a collection of ints and returns the sum of all of them.
+		/// </summary>
+		/// <param name="list"></param>
+		/// <returns></returns>
 		public static int GetSum(this IEnumerable<int> list){
 			int total = 0;
 			foreach(int num in list){
