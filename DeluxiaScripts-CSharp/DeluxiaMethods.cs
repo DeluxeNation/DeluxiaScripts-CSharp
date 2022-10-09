@@ -533,6 +533,35 @@ namespace Deluxia{
 			toSend.RemoveAll(x=>x == " ");
 			return toSend;
 		}
+		public static string StringListToString(this IEnumerable<string> list) {
+			string toSend = "";
+			foreach(string str in list) {
+				toSend += str;
+			}
+			return toSend;
+		}
+		public static List<int> GetIntsInString(this string sentence) {
+			string newSentence = sentence.Replace("\n","").Replace("\r","");
+			List<int> toSend = new List<int>();
+			bool keepAdding = false;
+			int lastNum = 0;
+			for(int i = 0; i < newSentence.Length;i++) {
+				if(char.Parse(newSentence.Substring(i,1)) >= 48 && char.Parse(newSentence.Substring(i,1)) <= 57) {
+					if(!keepAdding) {
+						keepAdding = true;
+						lastNum = 0;
+					}
+					lastNum += int.Parse(newSentence.Substring(i,1));
+				}
+				else {
+					if(keepAdding) {
+						keepAdding = false;
+						toSend.Add(lastNum);
+					}
+				}
+			}
+			return toSend;
+		}
 		public static List<string> GetLettersInString(this string sentence) {
 			List<string> toSend = new List<string>();
 			int times = 0;
