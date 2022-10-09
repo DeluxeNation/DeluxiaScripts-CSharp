@@ -533,6 +533,14 @@ namespace Deluxia{
 			toSend.RemoveAll(x=>x == " ");
 			return toSend;
 		}
+		public static List<string> GetLettersInString(this string sentence) {
+			List<string> toSend = new List<string>();
+			int times = 0;
+			for(int i = 0;i < sentence.Length;i++) {
+				toSend.Add(sentence.Substring(i,1));
+			}
+			return toSend;
+		}
 		/// <summary>
 		/// Checks if a string contains only capital letters.
 		/// </summary>
