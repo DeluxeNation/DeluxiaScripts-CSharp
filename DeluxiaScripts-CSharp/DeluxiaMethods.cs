@@ -6,9 +6,6 @@ using System.Text;
 using System.IO;
 using System.IO.Compression;
 namespace Deluxia{
-	public enum CloneNameType{
-		total, grid, originalName
-	}
 	/// <summary>
 	/// This is a class of methods that I use in my programs.
 	/// </summary>
