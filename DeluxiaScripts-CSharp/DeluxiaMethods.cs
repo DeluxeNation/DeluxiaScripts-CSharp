@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.IO.Compression;
+
 namespace Deluxia{
 	/// <summary>
 	/// This is a class of methods that I use in my programs.
@@ -122,12 +123,12 @@ namespace Deluxia{
 		/// <param name="element">The element to look for. Only accepts elements with a length of 1.</param>
 		/// <returns></returns>
 		public static int CountElementInString(this string check,string element){
-			if(element.Length != 1){
+			if(element.Length <= 0){
 				return 0;
 			}
 			int times = 0;
-			for(int i = 0;i < check.Length;i++){
-				if(check.Substring(i,1) == element){
+			for(int i = 0;i < check.Length-element.Length+1;i++){
+				if(check.Substring(i,element.Length) == element){
 					times++;
 				}
 			}
@@ -464,12 +465,12 @@ namespace Deluxia{
 		/// <param name="element">The element to find</param>
 		/// <typeparam name="T"></typeparam>
 		/// <returns>The first spot in an array where element shows up</returns>
-		public static int GetIndexOfElement<T>(this IEnumerable<T> list,T element){
+		public static int GetIndexOfElement<T>(this IEnumerable<T> list,T element,int startAt = 0){
 			if(list == null) {
 				return -1;
 			}
 			T[] check = list.ToArray();
-			for(int i = 0;i < check.Length;i++){
+			for(int i = startAt;i < check.Length;i++){
 				if(check[i] != null && check[i].Equals(element)){
 					return i;
 				}
@@ -507,28 +508,44 @@ namespace Deluxia{
 		/// <param name="sentence"></param>
 		/// <returns>The first word of sentence.</returns>
 		public static string GetFirstWord(this string sentence){
-			return sentence.Substring(0,sentence.IndexOf(" "));
+			if(sentence.Contains(" ")) {
+				return sentence.Substring(0,sentence.IndexOf(" "));
+			}
+			return sentence;
+			
 		}
 		/// <summary>
 		/// Converts a string sentence into a list of words. Note: each word must be separated by a space to count.
 		/// </summary>
 		/// <param name="sentence"></param>
 		/// <returns>A list of all the words in a string.</returns>
-		public static List<string> GetWordsInString(this string sentence){
+		public static List<string> GetWordsInString(this string sentence,string separator = " "){
 			string newSentence = sentence;
 			newSentence = newSentence.Replace("\n","").Replace("\r","");
 			List<string> toSend = new();
 			int times = 0;
-			while(newSentence.IndexOf(" ") != -1 && times < 500){
-				toSend.Add(newSentence.Substring(0,newSentence.IndexOf(" ")));
-				newSentence = newSentence.Remove(0,newSentence.IndexOf(" ") + 1);
+			while(newSentence.IndexOf(separator) != -1 && times < 500){
+				toSend.Add(newSentence[..newSentence.IndexOf(separator)]);
+				newSentence = newSentence.Remove(0,newSentence.IndexOf(separator) + 1);
 				times++;
 			}
 			if(newSentence.Length != 0){
 				toSend.Add(newSentence);
 			}
-			toSend.RemoveAll(x=>x == " ");
+			toSend.RemoveAll(x=>x == separator);
 			return toSend;
+		}
+		public static string GetFirstRange(this string sentence, string begin, string end, bool includeRangeStart) {
+			if(!sentence.Contains(begin) || !sentence.Contains(end) ){
+				return null;
+			}
+			string toSend = sentence.Substring(sentence.IndexOf(begin),sentence.IndexOf(end) -sentence.IndexOf(begin) + end.Length);
+			if(includeRangeStart) {
+				return toSend;
+			}
+			else {
+				return toSend.Replace(begin,"").Replace(end,"");
+			}
 		}
 		public static string StringListToString(this IEnumerable<string> list) {
 			string toSend = "";
@@ -539,7 +556,7 @@ namespace Deluxia{
 		}
 		public static List<int> GetIntsInString(this string sentence) {
 			string newSentence = sentence.Replace("\n","").Replace("\r","");
-			List<int> toSend = new List<int>();
+			List<int> toSend = new();
 			bool keepAdding = false;
 			int lastNum = 0;
 			for(int i = 0; i < newSentence.Length;i++) {
@@ -622,6 +639,11 @@ namespace Deluxia{
 				}
 			}
 			return false;
+		}
+		public static int RoundOff(int number,int interval) {
+			int remainder = number % interval;
+			number += (remainder < interval / 2) ? -remainder : (interval - remainder);
+			return number;
 		}
 	}
 }
