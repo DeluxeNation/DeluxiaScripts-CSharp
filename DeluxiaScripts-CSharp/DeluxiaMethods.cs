@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.IO.Compression;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Deluxia{
 	/// <summary>
@@ -249,7 +251,25 @@ namespace Deluxia{
 			}
 			return toSend.ToArray();
 		}
-        /// <summary>
+		/// <summary>
+		/// Converts a nested array into a single array
+		/// </summary>
+		/// <param name="array"></param>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public static T[] Condense<T>(this T[,] array) {
+			if(array == null) {
+				return null;
+			}
+			List<T> toSend = new List<T>();
+			for(int y = 0; y < array.GetLength(1);y++) {
+				for(int x = 0; x < array.GetLength(0);x++) {
+					toSend.Add(array[x,y]);
+				}
+			}
+			return toSend.ToArray();
+		}
+		/// <summary>
 		/// Converts a nested array of lists into a single list.
 		/// </summary>
 		/// <param name="array"></param>
@@ -520,8 +540,11 @@ namespace Deluxia{
 		/// <param name="sentence"></param>
 		/// <returns>A list of all the words in a string.</returns>
 		public static List<string> GetWordsInString(this string sentence,string separator = " "){
+			if(separator == null || separator.Length == 0) {
+				throw new Exception($"{separator} is not a valid seperator.");
+			}
 			string newSentence = sentence;
-			newSentence = newSentence.Replace("\n","").Replace("\r","");
+			newSentence = newSentence.Replace("\n",separator).Replace("\r",separator);
 			List<string> toSend = new();
 			int times = 0;
 			while(newSentence.IndexOf(separator) != -1 && times < 500){
@@ -640,10 +663,113 @@ namespace Deluxia{
 			}
 			return false;
 		}
-		public static int RoundOff(int number,int interval) {
+		/// <summary>
+		/// Rounds a number to the nearest interval
+		/// For example RoundOff(3,10) would equal 0
+		/// </summary>
+		/// <param name="number"></param>
+		/// <param name="interval"></param>
+		/// <returns></returns>
+		public static int RoundOff(this int number,int interval) {
 			int remainder = number % interval;
 			number += (remainder < interval / 2) ? -remainder : (interval - remainder);
 			return number;
+		}
+		/// <summary>
+		/// Takes 2 ints and returns how far off the number is. Always returns positive
+		/// </summary>
+		/// <returns></returns>
+		public static int OffBy(this int numA,int numB) {
+			if(numA > numB) {
+				//UnityEngine.Debug.Log(numA - numB);
+				return numA - numB;
+			}
+			else {
+				//UnityEngine.Debug.Log(numB - numA);
+				return numB - numA;
+			}
+		}
+		public static void Swap<T>(IList<T> list,int indexA,int indexB) {
+			T tmp = list[indexA];
+			list[indexA] = list[indexB];
+			list[indexB] = tmp;
+		}
+		public static string ReplaceFirst(this string text,string search,string replace) {
+			int pos = text.IndexOf(search);
+			if(pos < 0) {
+				return text;
+			}
+			return text[..pos] + replace + text[(pos + search.Length)..];
+		}
+		/// <summary>
+		/// Blocks while condition is true or timeout occurs.
+		/// </summary>
+		/// <param name="condition">The condition that will perpetuate the block.</param>
+		/// <param name="frequency">The frequency at which the condition will be check, in milliseconds.</param>
+		/// <param name="timeout">Timeout in milliseconds.</param>
+		/// <exception cref="TimeoutException"></exception>
+		/// <returns></returns>
+		public static async Task WaitWhile(Func<bool> condition,int frequency = 25,int timeout = -1) {
+			var waitTask = Task.Run(async () =>
+			{
+				while(condition())
+					await Task.Delay(frequency);
+			});
+
+			if(waitTask != await Task.WhenAny(waitTask,Task.Delay(timeout)))
+				throw new TimeoutException();
+		}
+
+		/// <summary>
+		/// Blocks until condition is true or timeout occurs.
+		/// </summary>
+		/// <param name="condition">The break condition.</param>
+		/// <param name="frequency">The frequency at which the condition will be checked.</param>
+		/// <param name="timeout">The timeout in milliseconds.</param>
+		/// <returns></returns>
+		public static async Task WaitUntil(Func<bool> condition,int frequency = 25,int timeout = -1) {
+			var waitTask = Task.Run(async () =>
+			{
+				while(!condition())
+					await Task.Delay(frequency);
+			});
+
+			if(waitTask != await Task.WhenAny(waitTask,
+					Task.Delay(timeout)))
+				throw new TimeoutException();
+		}
+		public static string ToRoman(this int number) {
+			if((number < 0) || (number > 3999))
+				throw new ArgumentOutOfRangeException("insert value betwheen 1 and 3999");
+			if(number < 1)
+				return string.Empty;
+			if(number >= 1000)
+				return "M" + ToRoman(number - 1000);
+			if(number >= 900)
+				return "CM" + ToRoman(number - 900);
+			if(number >= 500)
+				return "D" + ToRoman(number - 500);
+			if(number >= 400)
+				return "CD" + ToRoman(number - 400);
+			if(number >= 100)
+				return "C" + ToRoman(number - 100);
+			if(number >= 90)
+				return "XC" + ToRoman(number - 90);
+			if(number >= 50)
+				return "L" + ToRoman(number - 50);
+			if(number >= 40)
+				return "XL" + ToRoman(number - 40);
+			if(number >= 10)
+				return "X" + ToRoman(number - 10);
+			if(number >= 9)
+				return "IX" + ToRoman(number - 9);
+			if(number >= 5)
+				return "V" + ToRoman(number - 5);
+			if(number >= 4)
+				return "IV" + ToRoman(number - 4);
+			if(number >= 1)
+				return "I" + ToRoman(number - 1);
+			throw new Exception("Impossible state reached");
 		}
 	}
 }

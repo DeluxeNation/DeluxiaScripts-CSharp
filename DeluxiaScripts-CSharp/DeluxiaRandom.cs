@@ -419,7 +419,7 @@ namespace Deluxia.Random
 				return list.ToList();
 			}
 			List<T> originalList = list.ToList();
-			List<T> listCopy = new List<T>(originalList), listToSend = new List<T>();
+			List<T> listCopy = new(originalList), listToSend = new();
 			for(int i = 0;i < originalList.Count;i++){
 				int rand = NextIndex(listCopy);
 				listToSend.Add(listCopy[rand]);
