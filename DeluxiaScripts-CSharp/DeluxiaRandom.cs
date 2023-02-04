@@ -457,14 +457,14 @@ namespace Deluxia.Random
             return buffer;
         }
 
-        public T Choose<T>(List<T> items)
+        public T Choose<T>(IEnumerable<T> items)
         {
-            return items[NextInteger(0, items.Count)];
+            return items.ToList()[NextInteger(0, items.Count())];
         }
 
-        public List<T> Choose<T>(List<T> items, int quantity)
+        public List<T> Choose<T>(IEnumerable<T> items, int quantity)
         {
-            List<T> buffer = new List<T>(quantity);
+            List<T> buffer = new(quantity);
             for (int i = 0; i < quantity; i++)
             {
                 buffer.Add(Choose(items));
