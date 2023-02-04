@@ -338,11 +338,15 @@ namespace Deluxia {
             return toSend.ToArray();
         }
         /// <summary>
-        /// Converts an int to a byte. All elements except possibly the last one will have values of 255
+        /// Converts an int to a byte. All elements except possibly the last one will have values of 255. A value of 1 at 0 means this is a negative number
         /// </summary>
         public static byte[] IntToByteArray(int num) {
-            byte[] toSend = new byte[(num / 255) + 1];
-            for(int i = 0;i < toSend.Length;i++) {
+            
+            byte[] toSend = new byte[(num / 255) + 1+(num < 0?1:0)];
+			if(num < 0) {
+                toSend[0] = 1;
+			}
+			for(int i = num < 0?1:0;i < toSend.Length;i++) {
                 if(i + 1 == toSend.Length) {
                     toSend[i] = (byte)(num - (255 * i));
                 }
@@ -352,7 +356,11 @@ namespace Deluxia {
             }
             return toSend;
         }
+        public static int ByteArrayToInt(byte[] serialized) {
+            bool isNegative = serialized.Length > 1 && serialized[0] == 1;
+            return DeluxiaMethods.GetSum(serialized)*(isNegative?-1:1);
 
+        }
         /// <summary>
         /// Compresses a string into a shorter string.
         /// </summary>

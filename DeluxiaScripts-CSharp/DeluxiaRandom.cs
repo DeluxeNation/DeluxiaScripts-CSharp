@@ -472,7 +472,23 @@ namespace Deluxia.Random
             return buffer;
         }
 
-        public bool NextProbability(float percent)
+		public void ChooseDistinct<T>(T[] items,T[] resultBuffer) {
+            List<T> itemsLeft = new(items);
+			for(int i = 0;i < resultBuffer.Length && itemsLeft.Count > 0 ;i++) {
+				resultBuffer[i] = Choose(itemsLeft);
+                itemsLeft.Remove(resultBuffer[i]);
+			}
+		}
+		public List<T> ChooseDistinct<T>(List<T> items,int quantity) {
+			List<T> buffer = new List<T>(quantity);
+			List<T> itemsLeft = new(items);
+			for(int i = 0;i < quantity && itemsLeft.Count > 0;i++) {
+				buffer.Add(Choose(itemsLeft));
+                itemsLeft.Remove(buffer[i]);
+			}
+			return buffer;
+		}
+		public bool NextProbability(float percent)
         {
             if (percent >= 1.0f) return true;
             if (percent <= 0.0f) return false;
