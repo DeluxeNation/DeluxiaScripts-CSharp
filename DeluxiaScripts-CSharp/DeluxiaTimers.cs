@@ -25,20 +25,20 @@ namespace Deluxia{
 			await Start();
 		}
 		public async Task Start() {
-			UnityEngine.Debug.LogWarning("Start");
+			//UnityEngine.Debug.LogWarning("Start");
 			pause = false;
 			while(timeLeft > 0 && !pause) {
 				timeLeft--;
 				await Task.Delay(1000);
 			}
-			UnityEngine.Debug.LogWarning("End Timer");
+			//UnityEngine.Debug.LogWarning("End Timer");
 			if(!pause) {
 				action();
 			}
 
 		}
 		public void Stop() {
-			UnityEngine.Debug.LogWarning("Stop");
+			//UnityEngine.Debug.LogWarning("Stop");
 			pause = true;
 			timeLeft = startingTime;
 		}
