@@ -723,6 +723,7 @@ namespace Deluxia{
 		/// <summary>
 		/// Blocks until condition is true or timeout occurs.
 		/// </summary>
+		/// <remarks>https://stackoverflow.com/questions/29089417/c-sharp-wait-until-condition-is-true</remarks>
 		/// <param name="condition">The break condition.</param>
 		/// <param name="frequency">The frequency at which the condition will be checked.</param>
 		/// <param name="timeout">The timeout in milliseconds.</param>

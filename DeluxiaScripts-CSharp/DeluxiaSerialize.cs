@@ -1,3 +1,4 @@
+using Steamworks.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -113,22 +114,33 @@ namespace Deluxia {
                 return "null";
             }
             string toSend = "";
-            foreach(T[][] top in encoded) {
-                toSend += "[";
-                foreach(T[] middle in top) {
-                    if(middle == null) {
+            try {
+                foreach(T[][] top in encoded) {
+                    toSend += "[";
+                    foreach(T[] middle in top) {
+                        if(middle == null) {
+                            UnityEngine.Debug.LogError("NULL " +toSend);
+                            toSend += ";";
+                            continue;
+                        }
+                        else {
+                            foreach(T val in middle) {
+                                toSend += val + ",";
+                            }
+                        }
+                        toSend = toSend[..^1];
                         toSend += ";";
-                        continue;
                     }
-                    foreach(T val in middle) {
-                        toSend += val + ",";
-                    }
-                    toSend = toSend.Substring(0,toSend.Length - 1);
-                    toSend += ";";
+                    toSend += "]" + (newLine ? "\n" : "");
                 }
-                toSend += "]" + (newLine ? "\n" : "");
+                return toSend;
             }
-            return toSend;
+            catch(Exception e) {
+				UnityEngine.Debug.LogError("Failed to complete "+toSend);
+				UnityEngine.Debug.LogException(e);
+
+                return "";
+            }
         }
         /// <summary>
         /// Converts a T[][] to a readable string.
@@ -306,7 +318,12 @@ namespace Deluxia {
             for(int h = 0;h < bracketCount;h++) {
                 List<byte[]> toSend2 = new List<byte[]>();
                 int totalTimes = code.Substring(0,code.IndexOf("]")).CountElementInString(";");
-                for(int i = 0;i < totalTimes;i++) {
+                //UnityEngine.Debug.LogError(code);
+				if(code.IndexOf(";") == 0) {
+                    code = code.Remove(0,1);
+                    continue;
+				}
+				for(int i = 0;i < totalTimes;i++) {
                     List<byte> data = new List<byte>();
                     bool end = false;
                     while(!end) {
@@ -318,10 +335,11 @@ namespace Deluxia {
                         if(code.IndexOf(",") == -1 || code.IndexOf(",") > code.IndexOf("]")) {
                             end = true;
                         }
-                        else {
+						else {
                             end = code.IndexOf(";") < code.IndexOf(",");
                         }
                         string stopAt = end ? ";" : ",";
+                        
                         data.Add(byte.Parse(code.Substring(0,code.IndexOf(stopAt))));
                         code = code.Remove(0,code.IndexOf(stopAt) + 1);
                     }

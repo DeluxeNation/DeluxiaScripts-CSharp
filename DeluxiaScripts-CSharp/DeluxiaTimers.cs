@@ -20,7 +20,8 @@ namespace Deluxia{
 			}
 			
 		}
-		public async Task Restart() {
+		public async Task Restart(int set = -1) {
+			startingTime = set == -1 ? startingTime : set;
 			timeLeft = startingTime;
 			await Start();
 		}
