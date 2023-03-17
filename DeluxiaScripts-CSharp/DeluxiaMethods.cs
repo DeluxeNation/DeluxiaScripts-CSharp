@@ -729,15 +729,27 @@ namespace Deluxia{
 		/// <param name="timeout">The timeout in milliseconds.</param>
 		/// <returns></returns>
 		public static async Task WaitUntil(Func<bool> condition,int frequency = 25,int timeout = -1) {
-			var waitTask = Task.Run(async () =>
-			{
-				while(!condition())
+			//ulong times = 0;
+			Task waitTask = null;
+			if(timeout == -1) {
+				while(!condition()) {
 					await Task.Delay(frequency);
-			});
+					//times++;
+				}
+			}
+			else {
+				waitTask = Task.Run(async () => {
+					while(!condition()) {
+						await Task.Delay(frequency);
+						//times++;
+					}
+				});
+			}
 
-			if(waitTask != await Task.WhenAny(waitTask,
-					Task.Delay(timeout)))
+			if( timeout != -1 && waitTask != await Task.WhenAny(waitTask,
+					Task.Delay(timeout))) {
 				throw new TimeoutException();
+			}
 		}
 		public static string ToRoman(this int number) {
 			if((number < 0) || (number > 3999))

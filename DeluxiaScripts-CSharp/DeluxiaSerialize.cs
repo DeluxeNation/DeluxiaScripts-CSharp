@@ -180,16 +180,14 @@ namespace Deluxia {
                 return "{Empty}";
             }
             string toSend = "";
-            int spot = 0;
             //Debug.Log(encoded.Length);
             //int times = 0;
             foreach(T val in encoded) {
                 //Debug.Log("Time "+ (times++));
                 toSend += val + ",";
             }
-            toSend = toSend.Substring(0,toSend.Length - 1);
+            toSend = toSend[..^1];
             toSend += ";";
-            spot++;
             return toSend;
         }
         /// <summary>
