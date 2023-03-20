@@ -41,10 +41,10 @@ namespace Deluxia {
             }
             return toSend;
         }
-        /// <summary>
-        /// Converts a serialized string back to a string.
-        /// </summary>
-        public static string ByteArrayToString(byte[] data,bool compressed) {
+		/// <summary>
+		/// Converts a serialized string back to a string.
+		/// </summary>
+		public static string ByteArrayToString(byte[] data,bool compressed) {
             if(data == null || data.Length == 0) {
                 return "";
             }
@@ -80,10 +80,32 @@ namespace Deluxia {
             }
             return nextData2.ToArray();
         }
-        /// <summary>
-        /// Converts a serialized string[] back to a string[].
-        /// </summary>
-        public static string[] ToStringArray(byte[] ser) {
+		public static int[] SerializedStringToIntArray(string code) {
+			/*int[] toSend = new int[text.CountElementInString(",")+1];
+			for(int i = 0;i < toSend.Length;i++, i++) {
+                toSend[i] = int.Parse()
+			}
+			return toSend;*/
+			List<int> data = new();
+			bool end = false;
+			while(!end) {
+				if(code.IndexOf(",") == -1 && code.CountElementInString(";") <= 1) {
+					//Debug.Log("END");
+					end = true;
+				}
+				else {
+					end = code.IndexOf(";") < code.IndexOf(",") || code.IndexOf(",") == -1;
+				}
+				string stopAt = end ? ";" : ",";
+				data.Add(int.Parse(code[..code.IndexOf(stopAt)]));
+				code = code.Remove(0,code.IndexOf(stopAt) + 1);
+			}
+			return data.ToArray();
+		}
+		/// <summary>
+		/// Converts a serialized string[] back to a string[].
+		/// </summary>
+		public static string[] ToStringArray(byte[] ser) {
             if(ser == null || ser.Length == 0) {
                 return null;
             }
@@ -256,16 +278,9 @@ namespace Deluxia {
                 else {
                     end = code.IndexOf(";") < code.IndexOf(",") || code.IndexOf(",") == -1;
                 }
-                // if(code.Substring(0,1) == ";"){
-                //     data.Add(null);
-                //     code = code.Remove(0,1);
-                //     break;
-                // }
                 string stopAt = end ? ";" : ",";
-                //Debug.Log(stopAt+code);
                 data.Add(short.Parse(code.Substring(0,code.IndexOf(stopAt))));
                 code = code.Remove(0,code.IndexOf(stopAt) + 1);
-                //Debug.Log(end);
             }
             return data.ToArray();
         }
