@@ -7,6 +7,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace Deluxia{
 	/// <summary>
@@ -716,15 +717,24 @@ namespace Deluxia{
 		/// <param name="timeout">Timeout in milliseconds.</param>
 		/// <exception cref="TimeoutException"></exception>
 		/// <returns></returns>
-		public static async Task WaitWhile(Func<bool> condition,int frequency = 25,int timeout = -1) {
-			var waitTask = Task.Run(async () =>
-			{
-				while(condition())
+		public static async Task<bool> WaitWhile(Func<bool> condition,int frequency = 25,int timeout = -1) {
+			if(timeout == 0) {
+				while(condition()) {
 					await Task.Delay(frequency);
-			});
-
-			if(waitTask != await Task.WhenAny(waitTask,Task.Delay(timeout)))
-				throw new TimeoutException();
+					//times++;
+				}
+				return true;
+			}
+			else {
+				Stopwatch time = new();
+				time.Start();
+				while(!condition() && time.ElapsedMilliseconds < timeout) {
+					await Task.Delay(frequency);
+						//times++;
+				}
+				time.Stop();
+				return time.ElapsedMilliseconds < timeout;
+			}
 		}
 
 		/// <summary>
@@ -735,27 +745,24 @@ namespace Deluxia{
 		/// <param name="frequency">The frequency at which the condition will be checked.</param>
 		/// <param name="timeout">The timeout in milliseconds.</param>
 		/// <returns></returns>
-		public static async Task WaitUntil(Func<bool> condition,int frequency = 25,int timeout = -1) {
+		public static async Task<bool> WaitUntil(Func<bool> condition,int frequency = 25,uint timeout = 0) {
 			//ulong times = 0;
-			Task waitTask = null;
-			if(timeout == -1) {
+			if(timeout == 0) {
 				while(!condition()) {
 					await Task.Delay(frequency);
 					//times++;
 				}
+				return true;
 			}
 			else {
-				waitTask = Task.Run(async () => {
-					while(!condition()) {
-						await Task.Delay(frequency);
+				Stopwatch time = new();
+				time.Start();
+				while(!condition() && time.ElapsedMilliseconds < timeout) {
+					await Task.Delay(frequency);
 						//times++;
-					}
-				});
-			}
-
-			if( timeout != -1 && waitTask != await Task.WhenAny(waitTask,
-					Task.Delay(timeout))) {
-				throw new TimeoutException();
+				}
+				time.Stop();
+				return time.ElapsedMilliseconds < timeout;
 			}
 		}
 		public static string ToRoman(this int number) {
@@ -790,6 +797,13 @@ namespace Deluxia{
 			if(number >= 1)
 				return "I" + ToRoman(number - 1);
 			throw new Exception("Impossible state reached");
+		}
+		public static List<T> GetRange<T>(this IEnumerable<T> list,int start) {
+			List<T> toSend = new(), current = new(list);
+			for(int i = start; i < current.Count;i++) {
+				toSend.Add(current[i]);
+			}
+			return toSend;
 		}
 	}
 }

@@ -156,9 +156,9 @@ namespace Deluxia.Random
             return buffer;
         }
 
-        public int NextInteger(int maxValue)
+        public int NextInteger(int maxExclusive)
         {
-            return NextInteger(0, maxValue);
+            return NextInteger(0, maxExclusive);
         }
 
         public void NextIntegers(int maxValue, int[] buffer)
