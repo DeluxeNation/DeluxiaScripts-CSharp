@@ -227,16 +227,16 @@ namespace Deluxia {
                 toSend = $"[{encoded.GetLength(0)},{encoded.GetLength(1)}]";
             }
             //Debug.Log(encoded.Length);
-            for(int i = 0;i < encoded.GetLength(0);i++) {
+            for(int y = 0;y < encoded.GetLength(1);y++) {
                 toSend += "{";
                 //int times = 0;
-                if(encoded[i,0] == null) {
+                if(encoded[y,0] == null) {
                     break;
                 }
                 //Debug.Log(spot+1);
-                for(int j = 0;j < encoded.GetLength(1);j++) {
+                for(int x = 0;x < encoded.GetLength(1);x++) {
                     //Debug.Log("Time "+ (times++));
-                    toSend += encoded[i,j] + ",";
+                    toSend += encoded[x,y] + ",";
                 }
                 toSend = toSend.Substring(0,toSend.Length - 1);
                 toSend += "}";
