@@ -159,6 +159,9 @@ namespace Deluxia{
 		///<summary>This is mostly used to generate seeds for random generation scripts</summary>
 		/// <param name="str">The string to decode.</param>
 		public static int DecodeString(string str){
+			if(str == null) {
+				return 0;
+			}
 			//UnityEngine.Debug.Log("=>"+str);
 			int code = 0;
 			for(int i = 0;i < str.Length;i++){
