@@ -14,6 +14,9 @@ namespace Deluxia{
 	/// This is a class of methods that I use in my programs.
 	/// </summary>
 	public static class DeluxiaMethods{
+		public enum CondenseModifier {
+			SwapXY,InvertX,InvertY
+		}
 		public delegate void ModifyAll();
 		public delegate void ModifyAll<T>(T toModify);
 		/// <summary>
@@ -261,13 +264,40 @@ namespace Deluxia{
 		/// <param name="array"></param>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public static T[] Condense<T>(this T[,] array) {
+		public static T[] Condense<T>(this T[,] array,params CondenseModifier[] modifiers) {
 			if(array == null) {
 				return null;
 			}
+			
 			List<T> toSend = new List<T>();
-			for(int y = 0; y < array.GetLength(1);y++) {
-				for(int x = 0; x < array.GetLength(0);x++) {
+			int yStart = 0, yEnd = array.GetLength(1), yAdd = 1;
+			int xStart = 0, xEnd = array.GetLength(0), xAdd = 1;
+			int xD = 0, yD = 1;
+			foreach(CondenseModifier modifier in modifiers) {
+				switch(modifier) {
+					case CondenseModifier.SwapXY:
+						xD = 1;
+						yD = 0;
+						xEnd = array.GetLength(1);
+						yEnd = array.GetLength(0);
+						break;
+					case CondenseModifier.InvertX:
+						xStart = array.GetLength(xD) - 1;
+						xEnd = -1;
+						xAdd = -1;
+						break;
+					case CondenseModifier.InvertY:
+						yStart = array.GetLength(yD) - 1;
+						yEnd = -1;
+						yAdd = -1;
+						break;
+					
+					default:
+						throw new NotImplementedException();
+				}
+			}
+			for(int y = yStart;yStart > 0 ? y > yEnd : y < yEnd;y += yAdd) {
+				for(int x = xStart; xStart > 0? x > xEnd: x < xEnd ;x+=xAdd) {
 					toSend.Add(array[x,y]);
 				}
 			}
@@ -289,7 +319,33 @@ namespace Deluxia{
 			}
 			return toSend;
 		}
-        /// <summary>
+		//https://stackoverflow.com/a/42535
+		public static T[,] RotateMatrix<T>(this T[,] matrix,bool clockwise) {
+			if(matrix.GetLength(0) != matrix.GetLength(1)) {
+				throw new ArgumentException("X and Y length must be the same.");
+			}
+			int len = matrix.GetLength(0);
+			T[,] ret = new T[len,len];
+
+			if(clockwise) {
+				for(int i = 0;i < len;++i) {
+					for(int j = 0;j < len;++j) {
+						ret[i,j] = matrix[j,len - i - 1];
+					}
+				}
+				
+			}
+			else {
+				for(int i = 0;i < len;++i) {
+					for(int j = 0;j < len;++j) {
+						ret[i,j] = matrix[len - j - 1,i];
+					}
+				}
+			}
+
+			return ret;
+		}
+		/// <summary>
 		/// Converts a nested list of lists into a single list.
 		/// </summary>
 		/// <param name="list"></param>
@@ -342,6 +398,47 @@ namespace Deluxia{
 				}
 			}
 			return total;
+		}
+		public static T[,] Reverse<T>(this T[,] array,int spot,bool asX) {
+			T[,] toSend = array;
+			List<T> spotsToReverse = new();
+			if(asX) {
+				for(int i = 0; i < array.GetLength(1);i++) {
+					spotsToReverse.Add(array[spot,i]);
+				}
+				for(int i = 0;i < array.GetLength(1);i++) {
+					toSend[spot,i] = spotsToReverse[spotsToReverse.Count - 1 - i];
+				}
+			}
+			else {
+				for(int i = 0;i < array.GetLength(0);i++) {
+					spotsToReverse.Add(array[i,spot]);
+				}
+				for(int i = 0;i < array.GetLength(0);i++) {
+					toSend[i,spot] = spotsToReverse[spotsToReverse.Count - 1 - i];
+				}
+			}
+			return toSend;
+		}
+		public static T[,] Reverse<T>(this T[,] array,bool reverseX) {
+			T[,] toSend = new T[array.GetLength(0),array.GetLength(1)];
+			int xLength = array.GetLength(0),yLength = array.GetLength(1);
+			List<T> spotsToReverse = new();
+			if(reverseX) {
+				for(int y = 0;y < yLength;y++) {
+					for(int x = 0;x < xLength;x++) {
+						toSend[x,y] = array[xLength - 1 - x,y];
+					}
+				}
+			}
+			else {
+				for(int y = 0;y < yLength;y++) {
+					for(int x = 0;x < xLength;x++) {
+						toSend[x,y] = array[x,yLength - 1 - y];
+					}
+				}
+			}
+			return toSend;
 		}
 		/// <summary>
 		/// Takes a 2D byte array and returns the sum of all of the numbers.
@@ -545,7 +642,7 @@ namespace Deluxia{
 		/// <returns>A list of all the words in a string.</returns>
 		public static List<string> GetWordsInString(this string sentence,string separator = " "){
 			if(separator == null || separator.Length == 0) {
-				throw new Exception($"{separator} is not a valid seperator.");
+				throw new Exception($"{separator} is not a valid separator.");
 			}
 			string newSentence = sentence;
 			newSentence = newSentence.Replace("\n",separator).Replace("\r",separator);
@@ -604,8 +701,7 @@ namespace Deluxia{
 			return toSend;
 		}
 		public static List<string> GetLettersInString(this string sentence) {
-			List<string> toSend = new List<string>();
-			int times = 0;
+			List<string> toSend = new();
 			for(int i = 0;i < sentence.Length;i++) {
 				toSend.Add(sentence.Substring(i,1));
 			}
@@ -770,7 +866,7 @@ namespace Deluxia{
 		}
 		public static string ToRoman(this int number) {
 			if((number < 0) || (number > 3999))
-				throw new ArgumentOutOfRangeException("insert value betwheen 1 and 3999");
+				throw new ArgumentOutOfRangeException(nameof(number));
 			if(number < 1)
 				return string.Empty;
 			if(number >= 1000)
@@ -807,6 +903,17 @@ namespace Deluxia{
 				toSend.Add(current[i]);
 			}
 			return toSend;
+		}
+		public static T[] GetColumn<T>(T[,] matrix,int columnNumber) {
+			return Enumerable.Range(0,matrix.GetLength(0))
+					.Select(x => matrix[x,columnNumber])
+					.ToArray();
+		}
+
+		public static T[] GetRow<T>(T[,] matrix,int rowNumber) {
+			return Enumerable.Range(0,matrix.GetLength(1))
+					.Select(x => matrix[rowNumber,x])
+					.ToArray();
 		}
 	}
 }

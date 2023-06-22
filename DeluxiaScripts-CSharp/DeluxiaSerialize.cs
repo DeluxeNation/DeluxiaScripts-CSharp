@@ -16,7 +16,7 @@ namespace Deluxia {
         public static byte[] StringToByteArray(string text,bool compress) {
             bool extra = false;
             if(string.IsNullOrEmpty(text)) {
-                return new byte[0];
+                return Array.Empty<byte>();
             }
             if(compress) {
                 if(text.Zip().Length < text.Length) {
@@ -63,14 +63,14 @@ namespace Deluxia {
             if(stringArr == null) {
                 return null;//ew byte[]{0};
             }
-            List<byte[]> nextData = new List<byte[]>();
+            List<byte[]> nextData = new();
             int total = 0;
             foreach(string start in stringArr) {
                 byte[] add = Encoding.ASCII.GetBytes(start);
                 nextData.Add(add);
                 total += add.Length;
             }
-            List<byte> nextData2 = new List<byte>();
+            List<byte> nextData2 = new();
             foreach(byte[] data in nextData) {
                 foreach(byte d in data) {
                     nextData2.Add(d);
@@ -88,12 +88,12 @@ namespace Deluxia {
 			List<int> data = new();
 			bool end = false;
 			while(!end) {
-				if(code.IndexOf(",") == -1 && code.CountElementInString(";") <= 1) {
+				if(code.Contains(',') && code.CountElementInString(";") <= 1) {
 					//Debug.Log("END");
 					end = true;
 				}
 				else {
-					end = code.IndexOf(";") < code.IndexOf(",") || code.IndexOf(",") == -1;
+					end = code.IndexOf(";") < code.IndexOf(",") || !code.Contains(',');
 				}
 				string stopAt = end ? ";" : ",";
 				data.Add(int.Parse(code[..code.IndexOf(stopAt)]));
@@ -111,7 +111,7 @@ namespace Deluxia {
             if(ser[0] == 1 && ser.Length == 1) {
                 return new string[] { "" };
             }
-            List<string> data = new List<string>();
+            List<string> data = new();
             int spot = 0;
             while(spot < ser.Length) {
                 string word = "";
@@ -135,12 +135,11 @@ namespace Deluxia {
                 return "null";
             }
             string toSend = "";
-            try {
                 foreach(T[][] top in encoded) {
                     toSend += "[";
                     foreach(T[] middle in top) {
                         if(middle == null) {
-                            UnityEngine.Debug.LogError("NULL " +toSend);
+                            //UnityEngine.Debug.LogError("NULL " +toSend);
                             toSend += ";";
                             continue;
                         }
@@ -155,13 +154,6 @@ namespace Deluxia {
                     toSend += "]" + (newLine ? "\n" : "");
                 }
                 return toSend;
-            }
-            catch(Exception e) {
-				UnityEngine.Debug.LogError("Failed to complete "+toSend);
-				UnityEngine.Debug.LogException(e);
-
-                return "";
-            }
         }
         /// <summary>
         /// Converts a T[][] to a readable string.
@@ -184,7 +176,7 @@ namespace Deluxia {
                 foreach(T val in top) {
                     toSend += val + ",";
                 }
-                toSend = toSend.Substring(0,toSend.Length - 1);
+                toSend = toSend[..^1];
                 toSend += ";";
                 spot++;
             }
@@ -197,7 +189,7 @@ namespace Deluxia {
             if(encoded == null) {
                 return "null";
             }
-            if(encoded.Count() == 0) {
+            if(!encoded.Any()) {
                 return "{Empty}";
             }
             string toSend = "";
@@ -227,18 +219,18 @@ namespace Deluxia {
                 toSend = $"[{encoded.GetLength(0)},{encoded.GetLength(1)}]";
             }
             //Debug.Log(encoded.Length);
-            for(int i = 0;i < encoded.GetLength(0);i++) {
+            for(int y = 0;y < encoded.GetLength(1);y++) {
                 toSend += "{";
                 //int times = 0;
-                if(encoded[i,0] == null) {
+                if(encoded[y,0] == null) {
                     break;
                 }
                 //Debug.Log(spot+1);
-                for(int j = 0;j < encoded.GetLength(1);j++) {
+                for(int x = 0;x < encoded.GetLength(1);x++) {
                     //Debug.Log("Time "+ (times++));
-                    toSend += encoded[i,j] + ",";
+                    toSend += encoded[x,y] + ",";
                 }
-                toSend = toSend.Substring(0,toSend.Length - 1);
+                toSend = toSend[..^1];
                 toSend += "}";
             }
             return toSend;
@@ -246,17 +238,17 @@ namespace Deluxia {
         public static int[,] StringTo2DArray(string code) {
             int xx, yy;
             string codeClone = code.Remove(0,1);
-            xx = int.Parse(codeClone.Substring(0,codeClone.IndexOf(",") + 1));
-            codeClone = codeClone.Substring(codeClone.IndexOf(",") + 1);
-            yy = int.Parse(codeClone.Substring(0,codeClone.IndexOf("]") + 1));
-            codeClone = codeClone.Substring(codeClone.IndexOf("]") + 1);
+            xx = int.Parse(codeClone[..(codeClone.IndexOf(",") + 1)]);
+            codeClone = codeClone[(codeClone.IndexOf(",") + 1)..];
+            yy = int.Parse(codeClone[..(codeClone.IndexOf("]") + 1)]);
+            codeClone = codeClone[(codeClone.IndexOf("]") + 1)..];
             int[,] toSend = new int[xx,yy];
             //return null;
             for(int x = 0;x < xx;x++) {
                 for(int y = 0;y < yy;y++) {
-                    bool end = code.IndexOf(";") < code.IndexOf(",") || code.IndexOf(",") == -1;
+                    bool end = code.IndexOf(";") < code.IndexOf(",") || !code.Contains(',');
                     string stopAt = end ? "}" : ",";
-                    toSend[x,y] = (byte.Parse(code.Substring(0,code.IndexOf(stopAt))));
+                    toSend[x,y] = byte.Parse(code[..code.IndexOf(stopAt)]);
                     code = code.Remove(0,code.IndexOf(stopAt) + 1);
                     //Debug.Log(end);
                 }
@@ -267,18 +259,18 @@ namespace Deluxia {
         /// Converts a serialized string to a short[].
         /// </summary>
         public static short[] StringToShortArray(string code) {
-            List<short> data = new List<short>();
+            List<short> data = new();
             bool end = false;
             while(!end) {
-                if(code.IndexOf(",") == -1 && code.CountElementInString(";") <= 1) {
+                if(!code.Contains(',') && code.CountElementInString(";") <= 1) {
                     //Debug.Log("END");
                     end = true;
                 }
                 else {
-                    end = code.IndexOf(";") < code.IndexOf(",") || code.IndexOf(",") == -1;
+                    end = code.IndexOf(";") < code.IndexOf(",") || !code.Contains(',');
                 }
                 string stopAt = end ? ";" : ",";
-                data.Add(short.Parse(code.Substring(0,code.IndexOf(stopAt))));
+                data.Add(short.Parse(code[..code.IndexOf(stopAt)]));
                 code = code.Remove(0,code.IndexOf(stopAt) + 1);
             }
             return data.ToArray();
@@ -287,28 +279,28 @@ namespace Deluxia {
         /// Converts a serialized string to a byte[][]
         /// </summary>
         public static byte[][] StringToByte2Array(string code) {
-            List<byte[]> toSend = new List<byte[]>();
+            List<byte[]> toSend = new();
             bool trueEnd = false;
             while(!trueEnd) {
-                List<byte> data = new List<byte>();
+                List<byte> data = new();
                 bool end = false;
                 while(!end) {
-                    if(code.IndexOf(",") == -1 && code.CountElementInString(";") <= 1) {
+                    if(code.Contains(',') && code.CountElementInString(";") <= 1) {
                         //Debug.Log("END");
                         trueEnd = true;
                         end = true;
                     }
                     else {
-                        end = code.IndexOf(";") < code.IndexOf(",") || code.IndexOf(",") == -1;
+                        end = code.IndexOf(";") < code.IndexOf(",") || !code.Contains(',');
                     }
-                    if(code.Substring(0,1) == ";") {
+                    if(code[..1] == ";") {
                         toSend.Add(null);
                         code = code.Remove(0,1);
                         break;
                     }
                     string stopAt = end ? ";" : ",";
                     //Debug.Log(stopAt+code);
-                    data.Add(byte.Parse(code.Substring(0,code.IndexOf(stopAt))));
+                    data.Add(byte.Parse(code[..code.IndexOf(stopAt)]));
                     code = code.Remove(0,code.IndexOf(stopAt) + 1);
                     //Debug.Log(end);
                 }
@@ -324,27 +316,27 @@ namespace Deluxia {
                 return null;
             }
             //byte[][][] toSend = new byte[length1][][];
-            List<byte[][]> toSend = new List<byte[][]>();
+            List<byte[][]> toSend = new();
             code = code.Remove(0,1);
             int bracketCount = code.CountElementInString("]");
             for(int h = 0;h < bracketCount;h++) {
-                List<byte[]> toSend2 = new List<byte[]>();
-                int totalTimes = code.Substring(0,code.IndexOf("]")).CountElementInString(";");
+                List<byte[]> toSend2 = new();
+                int totalTimes = code[..code.IndexOf("]")].CountElementInString(";");
                 //UnityEngine.Debug.LogError(code);
 				if(code.IndexOf(";") == 0) {
                     code = code.Remove(0,1);
                     continue;
 				}
 				for(int i = 0;i < totalTimes;i++) {
-                    List<byte> data = new List<byte>();
+                    List<byte> data = new();
                     bool end = false;
                     while(!end) {
-                        if(code.Substring(0,1) == "]") {
-                            code.Remove(0,2);
+                        if(code[..1] == "]") {
+                            code = code.Remove(0,2);
                             end = true;
                             break;
                         }
-                        if(code.IndexOf(",") == -1 || code.IndexOf(",") > code.IndexOf("]")) {
+                        if(!code.Contains(',') || code.IndexOf(",") > code.IndexOf("]")) {
                             end = true;
                         }
 						else {
@@ -352,13 +344,13 @@ namespace Deluxia {
                         }
                         string stopAt = end ? ";" : ",";
                         
-                        data.Add(byte.Parse(code.Substring(0,code.IndexOf(stopAt))));
+                        data.Add(byte.Parse(code[..code.IndexOf(stopAt)]));
                         code = code.Remove(0,code.IndexOf(stopAt) + 1);
                     }
                     toSend2.Add(data.ToArray());
                 }
                 toSend.Add(toSend2.ToArray());
-                if(code.IndexOf("[") == -1) {
+                if(!code.Contains('[')){
                     code = code.Remove(0);
                 }
                 else {
@@ -417,19 +409,19 @@ namespace Deluxia {
         /// </summary>
         public static string Unzip(this string compressedText) {
             byte[] gZipBuffer = Convert.FromBase64String(compressedText);
-            using(var memoryStream = new MemoryStream()) {
-                int dataLength = BitConverter.ToInt32(gZipBuffer,0);
-                memoryStream.Write(gZipBuffer,4,gZipBuffer.Length - 4);
+            using var memoryStream = new MemoryStream();
+            int dataLength = BitConverter.ToInt32(gZipBuffer, 0);
+            memoryStream.Write(gZipBuffer, 4, gZipBuffer.Length - 4);
 
-                var buffer = new byte[dataLength];
+            var buffer = new byte[dataLength];
 
-                memoryStream.Position = 0;
-                using(var gZipStream = new GZipStream(memoryStream,CompressionMode.Decompress)) {
-                    gZipStream.Read(buffer,0,buffer.Length);
-                }
-
-                return Encoding.UTF8.GetString(buffer);
+            memoryStream.Position = 0;
+            using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Decompress))
+            {
+                gZipStream.Read(buffer, 0, buffer.Length);
             }
+
+            return Encoding.UTF8.GetString(buffer);
         }
         /*public static string Zip(this byte[][] data) {
             byte[] buffer = Encoding.UTF8.GetBytes(data);
