@@ -639,7 +639,7 @@ namespace Deluxia{
 		/// <returns>A list of all the words in a string.</returns>
 		public static List<string> GetWordsInString(this string sentence,string separator = " "){
 			if(separator == null || separator.Length == 0) {
-				throw new Exception($"{separator} is not a valid seperator.");
+				throw new Exception($"{separator} is not a valid separator.");
 			}
 			string newSentence = sentence;
 			newSentence = newSentence.Replace("\n",separator).Replace("\r",separator);
@@ -863,7 +863,7 @@ namespace Deluxia{
 		}
 		public static string ToRoman(this int number) {
 			if((number < 0) || (number > 3999))
-				throw new ArgumentOutOfRangeException("insert value betwheen 1 and 3999");
+				throw new ArgumentOutOfRangeException(nameof(number));
 			if(number < 1)
 				return string.Empty;
 			if(number >= 1000)
