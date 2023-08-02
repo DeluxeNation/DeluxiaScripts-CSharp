@@ -293,6 +293,11 @@ namespace Deluxia {
                     else {
                         end = code.IndexOf(";") < code.IndexOf(",") || !code.Contains(',');
                     }
+                    if(code.Length == 0) {
+                        end = true;
+                        trueEnd = true;
+                        break;
+                    }
                     if(code[..1] == ";") {
                         toSend.Add(null);
                         code = code.Remove(0,1);

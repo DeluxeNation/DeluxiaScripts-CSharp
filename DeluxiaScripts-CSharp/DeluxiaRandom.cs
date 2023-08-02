@@ -10,7 +10,7 @@ namespace Deluxia.Random
         private int _INextP;
         public long timesRandomized{get;private set;}
         private int[] _seedArray = new int[56];
-        private bool debug = false;
+        private readonly bool debug = false;
 
         /// <summary>
         /// The current seed of this instance.
@@ -578,9 +578,13 @@ namespace Deluxia.Random
             _INextP = locINextp;
             timesRandomized++;
             if(debug){
+#if UNITY_EDITOR
+                UnityEngine.Debug.Log(timesRandomized);
+#else
                 Console.WriteLine(timesRandomized);
-            }
-            return retVal;
+#endif
+			}
+			return retVal;
         }
 
         public int[] GetState()
