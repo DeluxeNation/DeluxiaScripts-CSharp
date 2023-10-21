@@ -74,6 +74,13 @@ namespace Deluxia.Random
         public DeluxiaRandom(int seed,bool debug = false)
         {
             Seed = seed;
+            if(debug) {
+                #if UNITY_EDITOR
+                UnityEngine.Debug.Log("Random seed set to " + seed);
+                #else
+                Console.WriteLine("Random seed set to " + seed);
+                #endif
+            }
             this.debug = debug;
         }
 

@@ -771,6 +771,9 @@ namespace Deluxia{
 		/// <param name="interval"></param>
 		/// <returns></returns>
 		public static int RoundOff(this int number,int interval) {
+			if(interval <= 1) {
+				return number;
+			}
 			int remainder = number % interval;
 			number += (remainder < interval / 2) ? -remainder : (interval - remainder);
 			return number;
