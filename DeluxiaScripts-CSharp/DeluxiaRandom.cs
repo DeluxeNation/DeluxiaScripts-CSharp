@@ -466,6 +466,9 @@ namespace Deluxia.Random
 
         public T Choose<T>(IEnumerable<T> items)
         {
+            if(items.Count() == 0) {
+                return default;
+            }
             return items.ToList()[NextInteger(0, items.Count())];
         }
 

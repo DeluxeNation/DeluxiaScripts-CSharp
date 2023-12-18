@@ -1,21 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.IO.Compression;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
-using System.Timers;
+using static UnityEngine.Rendering.DebugUI;
 
-namespace Deluxia{
+namespace Deluxia {
 	/// <summary>
 	/// This is a class of methods that I use in my programs.
 	/// </summary>
-	public static class DeluxiaMethods{
+	public static class DeluxiaMethods {
 		public enum CondenseModifier {
-			SwapXY,InvertX,InvertY
+			SwapXY, InvertX, InvertY
 		}
 		public delegate void ModifyAll();
 		public delegate void ModifyAll<T>(T toModify);
@@ -25,9 +22,9 @@ namespace Deluxia{
 		/// <param name="array"></param>
 		/// <param name="modify"></param>
 		/// <typeparam name="T"></typeparam>
-		public static void ModifyAllIn2DArray<T>(T[,] array,ModifyAll<T> modify){
-			for(int x = 0;x < array.GetLength(0);x++){
-				for(int y = 0;y < array.GetLength(1);y++){
+		public static void ModifyAllIn2DArray<T>(T[,] array,ModifyAll<T> modify) {
+			for(int x = 0;x < array.GetLength(0);x++) {
+				for(int y = 0;y < array.GetLength(1);y++) {
 					modify(array[x,y]);
 				}
 			}
@@ -38,20 +35,20 @@ namespace Deluxia{
 		/// <param name="list"></param>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public static List<T> RandomizeList<T>(this IEnumerable<T> list,int seed = -1){
+		public static List<T> RandomizeList<T>(this IEnumerable<T> list,int seed = -1) {
 			System.Random ran;
-			if(seed == -1){
+			if(seed == -1) {
 				ran = new System.Random();
 			}
-			else{
+			else {
 				ran = new System.Random(seed);
 			}
-			if(list.Count() <= 1){
+			if(list.Count() <= 1) {
 				return list.ToList();
 			}
 			List<T> originalList = list.ToList();
 			List<T> listCopy = new(originalList), listToSend = new List<T>();
-			for(int i = 0;i < originalList.Count;i++){
+			for(int i = 0;i < originalList.Count;i++) {
 				int rand = ran.Next(0,listCopy.Count);
 				listToSend.Add(listCopy[rand]);
 				listCopy.RemoveAt(rand);
@@ -64,13 +61,13 @@ namespace Deluxia{
 		/// <param name="list"></param>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public static List<T> RandomizeList<T>(this IEnumerable<T> list,System.Random random){
-			if(list.Count() <= 1){
+		public static List<T> RandomizeList<T>(this IEnumerable<T> list,System.Random random) {
+			if(list.Count() <= 1) {
 				return list.ToList();
 			}
 			List<T> originalList = list.ToList();
 			List<T> listCopy = new(originalList), listToSend = new List<T>();
-			for(int i = 0;i < originalList.Count;i++){
+			for(int i = 0;i < originalList.Count;i++) {
 				int rand = random.Next(0,listCopy.Count);
 				listToSend.Add(listCopy[rand]);
 				listCopy.RemoveAt(rand);
@@ -83,20 +80,20 @@ namespace Deluxia{
 		/// <param name="list"></param>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public static T[] RandomizeArray<T>(this T[] list,int seed = -1){
+		public static T[] RandomizeArray<T>(this T[] list,int seed = -1) {
 			System.Random ran;
-			if(seed == -1){
+			if(seed == -1) {
 				ran = new System.Random();
 			}
-			else{
+			else {
 				ran = new System.Random(seed);
 			}
-			if(list.Length <= 1){
+			if(list.Length <= 1) {
 				return list;
 			}
 			List<T> originalList = list.ToList();
 			List<T> listCopy = new(originalList), listToSend = new List<T>();
-			for(int i = 0;i < originalList.Count;i++){
+			for(int i = 0;i < originalList.Count;i++) {
 				int nextNum = ran.Next(0,listCopy.Count);
 				listToSend.Add(listCopy[nextNum]);
 				listCopy.RemoveAt(nextNum);
@@ -109,13 +106,13 @@ namespace Deluxia{
 		/// <param name="list"></param>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public static T[] RandomizeArray<T>(this T[] list,System.Random random){
-			if(list.Length <= 1){
+		public static T[] RandomizeArray<T>(this T[] list,System.Random random) {
+			if(list.Length <= 1) {
 				return list;
 			}
 			List<T> originalList = list.ToList();
 			List<T> listCopy = new(originalList), listToSend = new List<T>();
-			for(int i = 0;i < originalList.Count;i++){
+			for(int i = 0;i < originalList.Count;i++) {
 				int nextNum = random.Next(0,listCopy.Count);
 				listToSend.Add(listCopy[nextNum]);
 				listCopy.RemoveAt(nextNum);
@@ -128,13 +125,13 @@ namespace Deluxia{
 		/// <param name="check">The string to check.</param>
 		/// <param name="element">The element to look for. Only accepts elements with a length of 1.</param>
 		/// <returns></returns>
-		public static int CountElementInString(this string check,string element){
-			if(element.Length <= 0){
+		public static int CountElementInString(this string check,string element) {
+			if(element.Length <= 0) {
 				return 0;
 			}
 			int times = 0;
-			for(int i = 0;i < check.Length-element.Length+1;i++){
-				if(check.Substring(i,element.Length) == element){
+			for(int i = 0;i < check.Length - element.Length + 1;i++) {
+				if(check.Substring(i,element.Length) == element) {
 					times++;
 				}
 			}
@@ -147,13 +144,13 @@ namespace Deluxia{
 		/// <param name="find">The element to find.</param>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public static int CountInList<T>(this IEnumerable<T> list,T find){
-			if(list == null){
+		public static int CountInList<T>(this IEnumerable<T> list,T find) {
+			if(list == null) {
 				return 0;
 			}
 			int times = 0;
-			foreach(T ob in list){
-				if(ob.Equals(find)){
+			foreach(T ob in list) {
+				if(ob.Equals(find)) {
 					times++;
 				}
 			}
@@ -161,17 +158,17 @@ namespace Deluxia{
 		}
 		///<summary>This is mostly used to generate seeds for random generation scripts</summary>
 		/// <param name="str">The string to decode.</param>
-		public static int DecodeString(string str){
+		public static int DecodeString(string str) {
 			if(str == null) {
 				return 0;
 			}
 			//UnityEngine.Debug.Log("=>"+str);
 			int code = 0;
-			for(int i = 0;i < str.Length;i++){
+			for(int i = 0;i < str.Length;i++) {
 				int added = ((int)char.Parse(str.Substring(i,1)) * (i + 1));
 				code += added;
 				//UnityEngine.Debug.Log(str.Substring(i,1)+"=>"+added+"=>"+code);
-				if(code > i * 100000){
+				if(code > i * 100000) {
 					code /= 2;
 				}
 			}
@@ -183,9 +180,9 @@ namespace Deluxia{
 		/// </summary>
 		/// <param name="list"></param>
 		/// <returns></returns>
-		public static long GetSum(this IEnumerable<long> list){
+		public static long GetSum(this IEnumerable<long> list) {
 			long total = 0;
-			foreach(long num in list){
+			foreach(long num in list) {
 				total += num;
 			}
 			return total;
@@ -195,9 +192,9 @@ namespace Deluxia{
 		/// </summary>
 		/// <param name="list"></param>
 		/// <returns></returns>
-		public static int GetSum(this IEnumerable<int> list){
+		public static int GetSum(this IEnumerable<int> list) {
 			int total = 0;
-			foreach(int num in list){
+			foreach(int num in list) {
 				total += num;
 			}
 			return total;
@@ -207,9 +204,9 @@ namespace Deluxia{
 		/// </summary>
 		/// <param name="list"></param>
 		/// <returns></returns>
-		public static int GetSum(this IEnumerable<byte> list){
+		public static int GetSum(this IEnumerable<byte> list) {
 			int total = 0;
-			foreach(byte num in list){
+			foreach(byte num in list) {
 				total += num;
 			}
 			return total;
@@ -219,10 +216,10 @@ namespace Deluxia{
 		/// </summary>
 		/// <param name="array"></param>
 		/// <returns></returns>
-		public static int GetSum(int[][] array){
+		public static int GetSum(int[][] array) {
 			int total = 0;
-			foreach(int[] arr in array){
-				foreach(int num in arr){
+			foreach(int[] arr in array) {
+				foreach(int num in arr) {
 					total += num;
 				}
 			}
@@ -233,10 +230,10 @@ namespace Deluxia{
 		/// </summary>
 		/// <param name="array"></param>
 		/// <returns></returns>
-		public static int GetSum(byte[][] array){
+		public static int GetSum(byte[][] array) {
 			int total = 0;
-			foreach(byte[] arr in array){
-				foreach(byte num in arr){
+			foreach(byte[] arr in array) {
+				foreach(byte num in arr) {
 					total += num;
 				}
 			}
@@ -248,12 +245,12 @@ namespace Deluxia{
 		/// <param name="array"></param>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public static T[] Condense<T>(this T[][] array){
-			if(array == null){
+		public static T[] Condense<T>(this T[][] array) {
+			if(array == null) {
 				return null;
 			}
 			List<T> toSend = new List<T>();
-			foreach(T[] ar in array){
+			foreach(T[] ar in array) {
 				toSend.AddRange(ar);
 			}
 			return toSend.ToArray();
@@ -268,7 +265,7 @@ namespace Deluxia{
 			if(array == null) {
 				return null;
 			}
-			
+
 			List<T> toSend = new List<T>();
 			int yStart = 0, yEnd = array.GetLength(1), yAdd = 1;
 			int xStart = 0, xEnd = array.GetLength(0), xAdd = 1;
@@ -291,13 +288,13 @@ namespace Deluxia{
 						yEnd = -1;
 						yAdd = -1;
 						break;
-					
+
 					default:
 						throw new NotImplementedException();
 				}
 			}
 			for(int y = yStart;yStart > 0 ? y > yEnd : y < yEnd;y += yAdd) {
-				for(int x = xStart; xStart > 0? x > xEnd: x < xEnd ;x+=xAdd) {
+				for(int x = xStart;xStart > 0 ? x > xEnd : x < xEnd;x += xAdd) {
 					toSend.Add(array[x,y]);
 				}
 			}
@@ -309,12 +306,12 @@ namespace Deluxia{
 		/// <param name="array"></param>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public static List<T> Condense<T>(this List<T>[] array){
-			if(array == null){
+		public static List<T> Condense<T>(this List<T>[] array) {
+			if(array == null) {
 				return null;
 			}
 			List<T> toSend = new List<T>();
-			foreach(List<T> ar in array){
+			foreach(List<T> ar in array) {
 				toSend.AddRange(ar);
 			}
 			return toSend;
@@ -333,7 +330,7 @@ namespace Deluxia{
 						ret[i,j] = matrix[j,len - i - 1];
 					}
 				}
-				
+
 			}
 			else {
 				for(int i = 0;i < len;++i) {
@@ -351,25 +348,25 @@ namespace Deluxia{
 		/// <param name="list"></param>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public static List<T> Condense<T>(this List<List<T>> list){
-			if(list == null){
+		public static List<T> Condense<T>(this List<List<T>> list) {
+			if(list == null) {
 				return null;
 			}
 			List<T> toSend = new List<T>();
-			foreach(List<T> ar in list){
+			foreach(List<T> ar in list) {
 				toSend.AddRange(ar);
 			}
 			return toSend;
 		}
-		public static T[][] Spread<T>(T[] array, int addEvery){
-			if(array == null || addEvery <= 0){
+		public static T[][] Spread<T>(T[] array,int addEvery) {
+			if(array == null || addEvery <= 0) {
 				return null;
 			}
 			List<T[]> toSend = new List<T[]>();
-			int currentX = 0,currentY = 0;
+			int currentX = 0, currentY = 0;
 			toSend.Add(new T[addEvery]);
-			for(int i = 0; i < array.Length;i++){
-				if(currentY == addEvery){
+			for(int i = 0;i < array.Length;i++) {
+				if(currentY == addEvery) {
 					currentX++;
 					currentY = 0;
 					toSend.Add(new T[addEvery]);
@@ -385,15 +382,15 @@ namespace Deluxia{
 		/// <param name="array"></param>
 		/// <param name = "dimension">-1 = All, 0-1 = Dimension
 		/// <returns></returns>
-		public static int GetSum(int[,] array,int spot,int dimension){
+		public static int GetSum(int[,] array,int spot,int dimension) {
 			int total = 0;
-			if(dimension == 0 || dimension == -1){
-				for(int i = 0;i < array.GetLength(1);i++){
+			if(dimension == 0 || dimension == -1) {
+				for(int i = 0;i < array.GetLength(1);i++) {
 					total += array[spot,i];
 				}
 			}
-			if(dimension == 1 || dimension == -1){
-				for(int i = 0;i < array.GetLength(0);i++){
+			if(dimension == 1 || dimension == -1) {
+				for(int i = 0;i < array.GetLength(0);i++) {
 					total += array[i,spot];
 				}
 			}
@@ -403,7 +400,7 @@ namespace Deluxia{
 			T[,] toSend = array;
 			List<T> spotsToReverse = new();
 			if(asX) {
-				for(int i = 0; i < array.GetLength(1);i++) {
+				for(int i = 0;i < array.GetLength(1);i++) {
 					spotsToReverse.Add(array[spot,i]);
 				}
 				for(int i = 0;i < array.GetLength(1);i++) {
@@ -422,7 +419,7 @@ namespace Deluxia{
 		}
 		public static T[,] Reverse<T>(this T[,] array,bool reverseX) {
 			T[,] toSend = new T[array.GetLength(0),array.GetLength(1)];
-			int xLength = array.GetLength(0),yLength = array.GetLength(1);
+			int xLength = array.GetLength(0), yLength = array.GetLength(1);
 			List<T> spotsToReverse = new();
 			if(reverseX) {
 				for(int y = 0;y < yLength;y++) {
@@ -446,15 +443,15 @@ namespace Deluxia{
 		/// <param name="array"></param>
 		/// <param name = "dimension">-1 = All, 0-1 = Dimension
 		/// <returns></returns>
-		public static int GetSum(byte[,] array,int spot,int dimension){
+		public static int GetSum(byte[,] array,int spot,int dimension) {
 			int total = 0;
-			if(dimension == 0 || dimension == -1){
-				for(int i = 0;i < array.GetLength(1);i++){
+			if(dimension == 0 || dimension == -1) {
+				for(int i = 0;i < array.GetLength(1);i++) {
 					total += array[spot,i];
 				}
 			}
-			if(dimension == 1 || dimension == -1){
-				for(int i = 0;i < array.GetLength(0);i++){
+			if(dimension == 1 || dimension == -1) {
+				for(int i = 0;i < array.GetLength(0);i++) {
 					total += array[i,spot];
 				}
 			}
@@ -466,9 +463,9 @@ namespace Deluxia{
 		/// </summary>
 		/// <param name="a1"></param>
 		/// <returns></returns>
-		public static int[] AddAllInCollections(this IEnumerable<int> a1,IEnumerable<int> a2){
+		public static int[] AddAllInCollections(this IEnumerable<int> a1,IEnumerable<int> a2) {
 			int[] array1 = new List<int>(a1).ToArray(), array2 = new List<int>(a2).ToArray();
-			for(int i = 0;i < Math.Min(array1.Length,array2.Length);i++){
+			for(int i = 0;i < Math.Min(array1.Length,array2.Length);i++) {
 				array1[i] += array2[i];
 			}
 			return array1;
@@ -480,28 +477,28 @@ namespace Deluxia{
 		/// <param name="list">The int[][] to add</param>
 		/// <returns></returns>
 
-		public static int[] AddAllInCollections(int[][] list){
-			if(list == null || list.Length == 0){
+		public static int[] AddAllInCollections(int[][] list) {
+			if(list == null || list.Length == 0) {
 				return null;
 			}
-			int[][] list2 = list.OrderByDescending(x=>x.Length).ToArray();
+			int[][] list2 = list.OrderByDescending(x => x.Length).ToArray();
 			int[] baseArray = list2[0];
-			for(int i = 1;i < list2.Length;i++){
-				for(int j = 0; j< list2[i].Length;j++){
-					baseArray[j]+=list2[i][j];
+			for(int i = 1;i < list2.Length;i++) {
+				for(int j = 0;j < list2[i].Length;j++) {
+					baseArray[j] += list2[i][j];
 				}
 			}
 			return baseArray;
 		}
-		public static List<int> AddAllInCollections(List<List<int>> list){
-			if(list == null || list.Count == 0){
+		public static List<int> AddAllInCollections(List<List<int>> list) {
+			if(list == null || list.Count == 0) {
 				return null;
 			}
-			List<List<int>> list2 = list.OrderByDescending(x=>x.Count).ToList();
+			List<List<int>> list2 = list.OrderByDescending(x => x.Count).ToList();
 			List<int> baseList = list2[0];
-			for(int i = 1;i < list2.Count;i++){
-				for(int j = 0; j< list2[i].Count;j++){
-					baseList[j]+=list2[i][j];
+			for(int i = 1;i < list2.Count;i++) {
+				for(int j = 0;j < list2[i].Count;j++) {
+					baseList[j] += list2[i][j];
 				}
 			}
 			return baseList;
@@ -512,9 +509,9 @@ namespace Deluxia{
 		/// </summary>
 		/// <param name="a1"></param>
 		/// <returns></returns>
-		public static int[] SubtractAllInCollection(this IEnumerable<int> a1,IEnumerable<int> a2){
+		public static int[] SubtractAllInCollection(this IEnumerable<int> a1,IEnumerable<int> a2) {
 			int[] array1 = a1.ToArray(), array2 = a2.ToArray();
-			for(int i = 0;i < Math.Min(array1.Length,array2.Length);i++){
+			for(int i = 0;i < Math.Min(array1.Length,array2.Length);i++) {
 				array1[i] -= array2[i];
 			}
 			return array1;
@@ -525,7 +522,7 @@ namespace Deluxia{
 		/// <param name="message">The extra text to add.</param>
 		/// <param name="num">The number to check</param>
 		/// <returns>If num == 1, it will return nothing. Else it will return (message).</returns>
-		public static string IgnoreOn1(string message,int num){
+		public static string IgnoreOn1(string message,int num) {
 			return num != 1 ? message : "";
 		}
 		/// <summary>
@@ -534,7 +531,7 @@ namespace Deluxia{
 		/// <param name="obj"></param>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public static T CloneObject<T>(this T obj){
+		public static T CloneObject<T>(this T obj) {
 			var inst = obj.GetType().GetMethod("MemberwiseClone",System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
 			return (T)inst.Invoke(obj,null);
 		}
@@ -544,9 +541,9 @@ namespace Deluxia{
 		/// <param name="array"></param>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public static T[] CloneAllInArray<T>(IEnumerable<T> array){
+		public static T[] CloneAllInArray<T>(IEnumerable<T> array) {
 			T[] toSend = array.ToArray();
-			for(int i = 0;i < toSend.Length;i++){
+			for(int i = 0;i < toSend.Length;i++) {
 				toSend[i] = toSend[i].CloneObject();
 			}
 			return toSend;
@@ -558,24 +555,24 @@ namespace Deluxia{
 		/// <param name="value">What to keep adding</param>
 		/// <param name="max">The maximum length the list can reach</param>
 		/// <typeparam name="T"></typeparam>
-		public static void PopulateList<T>(this List<T> list,T value,int max){
-			for(int i = list.Count;i < max;i++){
+		public static void PopulateList<T>(this List<T> list,T value,int max) {
+			for(int i = list.Count;i < max;i++) {
 				list.Add(value);
 			}
 		}
-		public static void FillDictionary<T,U>(this Dictionary<T,U> dictionary,IEnumerable<T> names,IEnumerable<U> vals){
+		public static void FillDictionary<T, U>(this Dictionary<T,U> dictionary,IEnumerable<T> names,IEnumerable<U> vals) {
 			T[] toAdd = names.ToArray();
 			U[] toAdd2 = vals.ToArray();
-			if(toAdd.Length != toAdd2.Length){
+			if(toAdd.Length != toAdd2.Length) {
 				throw new Exception("The 2 arrays must have the same length");
 			}
-			for(int i = 0; i < toAdd.Length;i++){
+			for(int i = 0;i < toAdd.Length;i++) {
 				dictionary.Add(toAdd[i],toAdd2[i]);
 			}
 		}
-		public static void FillDictionary<T,U>(this Dictionary<T,U> dictionary,IEnumerable<T> names,U val){
+		public static void FillDictionary<T, U>(this Dictionary<T,U> dictionary,IEnumerable<T> names,U val) {
 			T[] toAdd = names.ToArray();
-			for(int i = 0; i < toAdd.Length;i++){
+			for(int i = 0;i < toAdd.Length;i++) {
 				dictionary.Add(toAdd[i],val);
 			}
 		}
@@ -586,13 +583,13 @@ namespace Deluxia{
 		/// <param name="element">The element to find</param>
 		/// <typeparam name="T"></typeparam>
 		/// <returns>The first spot in an array where element shows up</returns>
-		public static int GetIndexOfElement<T>(this IEnumerable<T> list,T element,int startAt = 0){
+		public static int GetIndexOfElement<T>(this IEnumerable<T> list,T element,int startAt = 0) {
 			if(list == null) {
 				return -1;
 			}
 			T[] check = list.ToArray();
-			for(int i = startAt;i < check.Length;i++){
-				if(check[i] != null && check[i].Equals(element)){
+			for(int i = startAt;i < check.Length;i++) {
+				if(check[i] != null && check[i].Equals(element)) {
 					return i;
 				}
 			}
@@ -602,12 +599,12 @@ namespace Deluxia{
 		/// Takes 2 Dictionaries and combines them.
 		/// </summary>
 		/// <returns></returns>
-		public static Dictionary<T,U> Merge<T,U>(this Dictionary<T,U> origin,Dictionary<T,U> toAdd,bool overrideDuplicates){
+		public static Dictionary<T,U> Merge<T, U>(this Dictionary<T,U> origin,Dictionary<T,U> toAdd,bool overrideDuplicates) {
 			Dictionary<T,U> toSend = new Dictionary<T,U>(origin);
-			foreach(var item in toAdd){
-				if(toSend.Contains(item) && !overrideDuplicates){
+			foreach(var item in toAdd) {
+				if(toSend.Contains(item) && !overrideDuplicates) {
 				}
-				else{
+				else {
 					toSend[item.Key] = item.Value;
 				}
 			}
@@ -617,30 +614,90 @@ namespace Deluxia{
 		/// Takes 2 Dictionaries and combines them.
 		/// </summary>
 		/// <returns></returns>
-		public static Dictionary<T,U> Merge<T, U>(this Dictionary<T,U> origin,Dictionary<T,U> toAdd,bool overrideDuplicates,IEqualityComparer<T> comparer){
+		public static Dictionary<T,U> Merge<T, U>(this Dictionary<T,U> origin,Dictionary<T,U> toAdd,bool overrideDuplicates,IEqualityComparer<T> comparer) {
 			Dictionary<T,U> toSend = new(origin,comparer);
-			foreach(var item in toAdd){
+			foreach(var item in toAdd) {
 				toSend[item.Key] = item.Value;
 			}
 			return toSend;
+		}
+		public static T[][] GetEveryCombination<T>(this T[] toCheck,int outputLength, bool allowDuplicateIndexes, bool allowDifferentOrder) {
+			if(toCheck == null) {
+				return null;
+			}
+			if(toCheck.Length <= 1) {
+				return new T[][] { toCheck };
+			}
+			if(!allowDuplicateIndexes && toCheck.Length < outputLength) {
+				throw new ArgumentException("array length is less than output length");
+			}
+			if(!allowDifferentOrder) {
+				toCheck = toCheck.OrderBy(x => x).ToArray();
+			}
+			List<T[]> toReturn = new();
+			List<int[]> checkedSpots = new();
+			int[] spot = new int[outputLength],spotOrdered = new int[outputLength];
+			int maxSpot = toCheck.Length, spotMin1 = spot.Length - 1,spotMin2 = spot.Length - 2;
+			if(!allowDuplicateIndexes) {
+				for(int i = 0;i < spot.Length;i++) {
+					spot[i] = i;
+				}
+			}
+			while(spot[0] < maxSpot) {
+				spot[spotMin1]++;
+				for(int i = spotMin1; i >= 0;i--) {
+					if(spot[i] >= maxSpot) {
+						spot[i] = 0;
+						if(i == 0) {
+							spot[0] = -1;
+							break;
+						}
+						spot[i - 1]++;
+					}
+				}
+				if(spot[0] == -1) {
+					break;
+				}
+				if(!allowDuplicateIndexes && spot.Any(x=>spot.Count(y=>y == x) > 2)) {
+					continue;
+				}
+				if(!allowDifferentOrder) {
+					spotOrdered = spot.OrderBy(x => x).ToArray();
+					if(checkedSpots.Any(x=>x.SequenceEqual(spotOrdered))) {
+						continue;
+					}
+					checkedSpots.Add(spotOrdered);
+				}
+				toReturn.Add(spot.Select(x => toCheck[x]).ToArray());
+			}
+			return toReturn.ToArray();
+		}
+		public static IEnumerable<IEnumerable<T>> AllShifts<T>(IEnumerable<T> collection) {
+			List<IEnumerable<T>> toReturn = new();
+			Queue<T> shifter = new(collection);
+			for(int i = 0; i < collection.Count(); i++) {
+				toReturn.Add(new List<T>(shifter));
+				shifter.Enqueue(shifter.Dequeue());
+			}
+			return toReturn;
 		}
 		/// <summary>
 		/// </summary>
 		/// <param name="sentence"></param>
 		/// <returns>The first word of sentence.</returns>
-		public static string GetFirstWord(this string sentence){
+		public static string GetFirstWord(this string sentence) {
 			if(sentence.Contains(" ")) {
 				return sentence.Substring(0,sentence.IndexOf(" "));
 			}
 			return sentence;
-			
+
 		}
 		/// <summary>
 		/// Converts a string sentence into a list of words. Note: each word must be separated by a space to count.
 		/// </summary>
 		/// <param name="sentence"></param>
 		/// <returns>A list of all the words in a string.</returns>
-		public static List<string> GetWordsInString(this string sentence,string separator = " "){
+		public static List<string> GetWordsInString(this string sentence,string separator = " ") {
 			if(separator == null || separator.Length == 0) {
 				throw new Exception($"{separator} is not a valid separator.");
 			}
@@ -648,22 +705,22 @@ namespace Deluxia{
 			newSentence = newSentence.Replace("\n",separator).Replace("\r",separator);
 			List<string> toSend = new();
 			int times = 0;
-			while(newSentence.IndexOf(separator) != -1 && times < 500){
+			while(newSentence.IndexOf(separator) != -1 && times < 500) {
 				toSend.Add(newSentence[..newSentence.IndexOf(separator)]);
 				newSentence = newSentence.Remove(0,newSentence.IndexOf(separator) + 1);
 				times++;
 			}
-			if(newSentence.Length != 0){
+			if(newSentence.Length != 0) {
 				toSend.Add(newSentence);
 			}
-			toSend.RemoveAll(x=>x == separator);
+			toSend.RemoveAll(x => x == separator);
 			return toSend;
 		}
-		public static string GetFirstRange(this string sentence, string begin, string end, bool includeRangeStart) {
-			if(!sentence.Contains(begin) || !sentence.Contains(end) ){
+		public static string GetFirstRange(this string sentence,string begin,string end,bool includeRangeStart) {
+			if(!sentence.Contains(begin) || !sentence.Contains(end)) {
 				return null;
 			}
-			string toSend = sentence.Substring(sentence.IndexOf(begin),sentence.IndexOf(end) -sentence.IndexOf(begin) + end.Length);
+			string toSend = sentence.Substring(sentence.IndexOf(begin),sentence.IndexOf(end) - sentence.IndexOf(begin) + end.Length);
 			if(includeRangeStart) {
 				return toSend;
 			}
@@ -683,7 +740,7 @@ namespace Deluxia{
 			List<int> toSend = new();
 			bool keepAdding = false;
 			int lastNum = 0;
-			for(int i = 0; i < newSentence.Length;i++) {
+			for(int i = 0;i < newSentence.Length;i++) {
 				if(char.Parse(newSentence.Substring(i,1)) >= 48 && char.Parse(newSentence.Substring(i,1)) <= 57) {
 					if(!keepAdding) {
 						keepAdding = true;
@@ -712,9 +769,9 @@ namespace Deluxia{
 		/// </summary>
 		/// <param name="input"></param>
 		/// <returns></returns>
-		public static bool IsAllUpper(this string input){
-			for(int i = 0;i < input.Length;i++){
-				if(!char.IsUpper(input[i])){
+		public static bool IsAllUpper(this string input) {
+			for(int i = 0;i < input.Length;i++) {
+				if(!char.IsUpper(input[i])) {
 					return false;
 				}
 			}
@@ -726,11 +783,11 @@ namespace Deluxia{
 		/// <param name="previous">The original number.</param>
 		/// <param name="current">The new number.</param>
 		/// <returns>How much bigger (current) is compared to (previous)</returns>
-		public static decimal CalculateChange(decimal previous,decimal current){
-			if(previous == 0){
+		public static decimal CalculateChange(decimal previous,decimal current) {
+			if(previous == 0) {
 				return 0;
 			}
-			if(current == 0){
+			if(current == 0) {
 				return -100;
 			}
 			var change = ((current - previous) / previous) * 100;
@@ -742,22 +799,22 @@ namespace Deluxia{
 		/// <param name="previous">The original number.</param>
 		/// <param name="current">The new number.</param>
 		/// <returns>How much bigger (current) is compared to (previous)</returns>
-		public static float CalculateChangeF(float previous,float current){
-			if(previous == 0){
+		public static float CalculateChangeF(float previous,float current) {
+			if(previous == 0) {
 				return 0;
 			}
-			if(current == 0){
+			if(current == 0) {
 				return -100;
 			}
 			var change = ((current - previous) / previous) * 100;
 			return change;
 		}
-		public static bool ContainsAny<T>(this IEnumerable<T> list,IEnumerable<T> toCheck){
+		public static bool ContainsAny<T>(this IEnumerable<T> list,IEnumerable<T> toCheck) {
 			if(list == null || !list.Any() || toCheck == null || !toCheck.Any()) {
 				return false;
 			}
-			foreach(T t in toCheck){
-				if(list.Contains(t)){
+			foreach(T t in toCheck) {
+				if(list.Contains(t)) {
 					return true;
 				}
 			}
@@ -832,7 +889,7 @@ namespace Deluxia{
 				time.Start();
 				while(!condition() && time.ElapsedMilliseconds < timeout) {
 					await Task.Delay(frequency);
-						//times++;
+					//times++;
 				}
 				time.Stop();
 				return time.ElapsedMilliseconds < timeout;
@@ -861,11 +918,20 @@ namespace Deluxia{
 				time.Start();
 				while(!condition() && time.ElapsedMilliseconds < timeout) {
 					await Task.Delay(frequency);
-						//times++;
+					//times++;
 				}
 				time.Stop();
 				return time.ElapsedMilliseconds < timeout;
 			}
+		}
+		public static bool TryFirst<T>(this IEnumerable<T> source,out T value) {
+			value = default;
+			using var iterator = source.GetEnumerator();
+			if(iterator.MoveNext()) {
+				value = iterator.Current;
+				return true;
+			}
+			return false;
 		}
 		public static string ToRoman(this int number) {
 			if((number < 0) || (number > 3999))
@@ -902,7 +968,7 @@ namespace Deluxia{
 		}
 		public static List<T> GetRange<T>(this IEnumerable<T> list,int start) {
 			List<T> toSend = new(), current = new(list);
-			for(int i = start; i < current.Count;i++) {
+			for(int i = start;i < current.Count;i++) {
 				toSend.Add(current[i]);
 			}
 			return toSend;
@@ -917,6 +983,293 @@ namespace Deluxia{
 			return Enumerable.Range(0,matrix.GetLength(1))
 					.Select(x => matrix[rowNumber,x])
 					.ToArray();
+		}
+		public class Branch<T>: IList<Branch<T>> {
+			public T parent;
+			private readonly List<Branch<T>> children;
+
+			public int Count => children.Count;
+
+			public bool IsReadOnly => false;
+
+			public Branch<T> this[int index] { get => children[index]; set => children[index] = value; }
+
+			public Branch(T parent) {
+				this.parent = parent;
+				children = new();
+			}
+			/*public void Add(Branch<T> child) {
+				children.Add(child);
+			}*/
+			/*public string Serialize() {
+				string result = parent.ToString();
+				for(int i = 0;i < children.Count;i++) {
+					result += Serialize(new() { i });
+				}
+				return result;
+			}
+			private string Serialize(List<int> depth) {
+				string result = "\n";
+				string depthBars = "";
+				for(int i = 0;i < depth.Count;i++) {
+					depthBars += "-";
+				}
+				result += depthBars + parent.ToString();
+				try {
+					Branch<T> children = GetBranch(depth);
+					for(int i = 0;i < children.Count;i++) {
+						depth.Add(i);
+						result += Serialize(new() { i });
+						depth.RemoveAt(depth.Count - 1);
+					}
+					return result;
+				}
+				catch(IndexOutOfRangeException) {
+					return result;
+				}
+			}*/
+			public string Serialize() {
+				string result = parent.ToString();
+				for(int i = 0;i < children.Count;i++) {
+					result += children[i].SerializeContinue(1);
+				}
+				return result;
+			}
+			private string SerializeContinue(int depth) {
+				string result = "\n";
+				string depthBars = "";
+				for(int i = 0;i < depth;i++) {
+					depthBars += "-";
+				}
+				if(children.Count == 0) {
+					depthBars += "|";
+				}
+				result += depthBars + parent.ToString();
+
+				for(int i = 0;i < children.Count;i++) {
+					result += children[i].SerializeContinue(depth+1);
+				}
+				return result;
+			}
+			public string Serialize(IList<int> branch) {
+				
+				string result = parent.ToString();
+				if(branch.Count == 0) {
+					return result;
+				}
+				result += children[branch[0]].SerializeContinue(1,branch);
+				return result;
+			}
+			private string SerializeContinue(int depth,IList<int> branch) {
+				string result = "\n";
+				string depthBars = "";
+				for(int i = 0;i < depth;i++) {
+					depthBars += "-";
+				}
+				if(children.Count == 0) {
+					depthBars += "|";
+				}
+				result += depthBars + parent.ToString();
+				if(branch.Count > depth) {
+					result += children[branch[depth]].SerializeContinue(depth + 1,branch);
+				}
+				return result;
+			}
+			public string Serialize(Func<T,bool> condition) {
+				string result = parent.ToString();
+				for(int i = 0;i < children.Count;i++) {
+					result += children[i].SerializeContinue(1,condition);
+				}
+				return result;
+			}
+			private string SerializeContinue(int depth,Func<T,bool> condition) {
+				
+				if(condition.Invoke(parent)) {
+					string result = "\n";
+					string depthBars = "";
+					for(int i = 0;i < depth;i++) {
+						depthBars += "-";
+					}
+					if(children.Count == 0) {
+						depthBars += "|";
+					}
+					result += depthBars + parent.ToString();
+					for(int i = 0;i < children.Count;i++) {
+						result += children[i].SerializeContinue(depth + 1,condition);
+					}
+					return result;
+				}
+				return "";
+				
+			}
+			public int IndexOf(Branch<T> item) {
+				return children.IndexOf(item);
+			}
+
+			public void Insert(int index,Branch<T> item) {
+				children.Insert(index,item);
+			}
+
+			public void RemoveAt(int index) {
+				children.RemoveAt(index);
+			}
+
+			public void Add(Branch<T> item) {
+				children.Add(item);
+			}
+
+			public void Clear() {
+				children.Clear();
+			}
+
+			public bool Contains(Branch<T> item) {
+				return children.Contains(item);
+			}
+
+			public void CopyTo(Branch<T>[] array,int arrayIndex) {
+				children.CopyTo(array,arrayIndex);
+			}
+
+			public bool Remove(Branch<T> item) {
+				return children.Remove(item);
+			}
+
+			public IEnumerator<Branch<T>> GetEnumerator() {
+				return children.GetEnumerator();
+			}
+
+			IEnumerator IEnumerable.GetEnumerator() {
+				return children.GetEnumerator();
+			}
+			public Branch<T> GetBranch(List<int> i) {
+				try {
+					return i.Count switch {
+						0 => this,
+						1 => children[i[0]],
+						2 => children[i[0]][i[1]],
+						3 => children[i[0]][i[1]][i[2]],
+						4 => children[i[0]][i[1]][i[2]][i[3]],
+						5 => children[i[0]][i[1]][i[2]][i[3]][i[4]],
+						6 => children[i[0]][i[1]][i[2]][i[3]][i[4]][i[5]],
+						7 => children[i[0]][i[1]][i[2]][i[3]][i[4]][i[5]][i[6]],
+						8 => children[i[0]][i[1]][i[2]][i[3]][i[4]][i[5]][i[6]][i[7]],
+						9 => children[i[0]][i[1]][i[2]][i[3]][i[4]][i[5]][i[6]][i[7]][i[8]],
+						10 => children[i[0]][i[1]][i[2]][i[3]][i[4]][i[5]][i[6]][i[7]][i[8]][i[9]],
+						11 => children[i[0]][i[1]][i[2]][i[3]][i[4]][i[5]][i[6]][i[7]][i[8]][i[9]][i[10]],
+						12 => children[i[0]][i[1]][i[2]][i[3]][i[4]][i[5]][i[6]][i[7]][i[8]][i[9]][i[10]][i[11]],
+						13 => children[i[0]][i[1]][i[2]][i[3]][i[4]][i[5]][i[6]][i[7]][i[8]][i[9]][i[10]][i[11]][i[12]],
+						14 => children[i[0]][i[1]][i[2]][i[3]][i[4]][i[5]][i[6]][i[7]][i[8]][i[9]][i[10]][i[11]][i[12]][i[13]],
+						15 => children[i[0]][i[1]][i[2]][i[3]][i[4]][i[5]][i[6]][i[7]][i[8]][i[9]][i[10]][i[11]][i[12]][i[13]][i[14]],
+						16 => children[i[0]][i[1]][i[2]][i[3]][i[4]][i[5]][i[6]][i[7]][i[8]][i[9]][i[10]][i[11]][i[12]][i[13]][i[14]][i[15]],
+						17 => children[i[0]][i[1]][i[2]][i[3]][i[4]][i[5]][i[6]][i[7]][i[8]][i[9]][i[10]][i[11]][i[12]][i[13]][i[14]][i[15]][i[16]],
+						18 => children[i[0]][i[1]][i[2]][i[3]][i[4]][i[5]][i[6]][i[7]][i[8]][i[9]][i[10]][i[11]][i[12]][i[13]][i[14]][i[15]][i[16]][i[17]],
+						19 => children[i[0]][i[1]][i[2]][i[3]][i[4]][i[5]][i[6]][i[7]][i[8]][i[9]][i[10]][i[11]][i[12]][i[13]][i[14]][i[15]][i[16]][i[17]][i[18]],
+						20 => children[i[0]][i[1]][i[2]][i[3]][i[4]][i[5]][i[6]][i[7]][i[8]][i[9]][i[10]][i[11]][i[12]][i[13]][i[14]][i[15]][i[16]][i[17]][i[18]][i[19]],
+						_ => throw new ArgumentException(i + " is too long of a branch, max supported is 20"),
+					};
+				}
+				catch(IndexOutOfRangeException) {
+					throw new IndexOutOfRangeException($"{i.SerializeToString()} could not be found.");
+				}
+			}
+		}
+	}
+	public class DictionaryQueue<TKey, TValue>: IDictionary<TKey,TValue> {
+		//private lis
+		private IList<TKey> byIndex;
+		private IDictionary<TKey, TValue> collection;
+		public TValue this[TKey key] { get => collection[key]; set => collection[key] = value; }
+
+		public ICollection<TKey> Keys => byIndex;
+
+		public ICollection<TValue> Values => byIndex.Select(x => collection[x]).ToList();
+
+		public int Count => collection.Count;
+
+		public bool IsReadOnly => collection.IsReadOnly;
+		public DictionaryQueue() {
+			byIndex = new List<TKey>();
+			collection = new Dictionary<TKey, TValue>();
+		}
+		public DictionaryQueue(DictionaryQueue<TKey,TValue> queue){
+			byIndex = new List<TKey>(queue.byIndex);
+			collection = new Dictionary<TKey,TValue>(queue.collection);
+		}
+		public void Add(TKey key,TValue value) {
+			collection.Add(key, value);
+			byIndex.Add(key);
+		}
+
+		public void Add(KeyValuePair<TKey,TValue> item) {
+			collection.Add(item);
+			byIndex.Add(item.Key);
+		}
+
+		public void Clear() {
+			collection.Clear();
+			byIndex.Clear();
+		}
+
+		public bool Contains(KeyValuePair<TKey,TValue> item) {
+			return collection.Contains(item);
+		}
+
+		public bool ContainsKey(TKey key) {
+			return collection.ContainsKey(key);
+		}
+
+		public void CopyTo(KeyValuePair<TKey,TValue>[] array,int arrayIndex) {
+			throw new NotImplementedException();
+		}
+
+		public IEnumerator<KeyValuePair<TKey,TValue>> GetEnumerator() {
+			return collection.OrderBy(x=>byIndex.IndexOf(x.Key)).GetEnumerator();// byIndex.Select(x => collection[x]).AsEnumerable();
+		}
+
+		public bool Remove(TKey key) {
+			if(collection.ContainsKey(key)) {
+				collection.Remove(key);
+				byIndex.Remove(key);
+				return true;
+			}
+			return false;
+		}
+
+		public bool Remove(KeyValuePair<TKey,TValue> item) {
+			if(collection.Remove(item)) {
+				byIndex.Remove(item.Key);
+				return true;
+			}
+			return false;
+		}
+
+		public bool TryGetValue(TKey key,out TValue value) {
+			return collection.TryGetValue(key, out value);
+		}
+
+		IEnumerator IEnumerable.GetEnumerator() {
+			return collection.OrderBy(x => byIndex.IndexOf(x.Key)).GetEnumerator();
+		}
+	}
+	class BiDictionary<TMain, TSecondary> {
+		IDictionary<TMain,TSecondary> firstToSecond = new Dictionary<TMain,TSecondary>();
+		IDictionary<TSecondary,TMain> secondToFirst = new Dictionary<TSecondary,TMain>();
+		public TSecondary this[TMain key] { get => firstToSecond[key]; }
+		public void Add(TMain first,TSecondary second) {
+			if(firstToSecond.ContainsKey(first) ||
+				secondToFirst.ContainsKey(second)) {
+				throw new ArgumentException("Duplicate first or second");
+			}
+			firstToSecond.Add(first,second);
+			secondToFirst.Add(second,first);
+		}
+
+		public bool TryGetByFirst(TMain first,out TSecondary second) {
+			return firstToSecond.TryGetValue(first,out second);
+		}
+
+		public bool TryGetBySecond(TSecondary second,out TMain first) {
+			return secondToFirst.TryGetValue(second,out first);
 		}
 	}
 }
