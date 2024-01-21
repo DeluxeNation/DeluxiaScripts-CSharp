@@ -531,6 +531,9 @@ namespace Deluxia {
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
 		public static T CloneObject<T>(this T obj) {
+			if(obj == null || obj.Equals(default(T))) {
+				return default;
+			}
 			var inst = obj.GetType().GetMethod("MemberwiseClone",System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
 			return (T)inst.Invoke(obj,null);
 		}
