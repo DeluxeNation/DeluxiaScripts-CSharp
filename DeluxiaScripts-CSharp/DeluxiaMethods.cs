@@ -634,16 +634,16 @@ namespace Deluxia {
 				throw new ArgumentException("array length is less than output length");
 			}
 			if(!allowDifferentOrder) {
-				toCheck = toCheck.OrderBy(x => x).ToArray();
+				Array.Sort(toCheck);
 			}
 			List<T[]> toReturn = new();
-			List<int[]> checkedSpots = new();
 			int[] spot = new int[outputLength],spotOrdered = new int[outputLength];
-			int maxSpot = toCheck.Length, spotMin1 = spot.Length - 1,spotMin2 = spot.Length - 2;
+			int maxSpot = toCheck.Length, spotMin1 = spot.Length - 1;
 			if(!allowDuplicateIndexes) {
 				for(int i = 0;i < spot.Length;i++) {
 					spot[i] = i;
 				}
+				spot[spotMin1] = spot.Length - 2;
 			}
 			while(spot[0] < maxSpot) {
 				spot[spotMin1]++;
@@ -658,17 +658,13 @@ namespace Deluxia {
 					}
 				}
 				if(spot[0] == -1) {
-					break;
+					break; 
 				}
-				if(!allowDuplicateIndexes && spot.Any(x=>spot.Count(y=>y == x) > 2)) {
+				if(!allowDuplicateIndexes && !spot.AllDistinct()) {
 					continue;
 				}
-				if(!allowDifferentOrder) {
-					spotOrdered = spot.OrderBy(x => x).ToArray();
-					if(checkedSpots.Any(x=>x.SequenceEqual(spotOrdered))) {
-						continue;
-					}
-					checkedSpots.Add(spotOrdered);
+				if(!allowDifferentOrder && !spot.SequenceEqual(spot.OrderBy(x=>x))) {
+					continue;
 				}
 				toReturn.Add(spot.Select(x => toCheck[x]).ToArray());
 			}
@@ -682,6 +678,15 @@ namespace Deluxia {
 				shifter.Enqueue(shifter.Dequeue());
 			}
 			return toReturn;
+		}
+		public static bool AllDistinct<T>(this IEnumerable<T> t) {
+			HashSet<T> test = new();
+			foreach(T item in t) {
+				if(!test.Add(item)) {
+					return false;
+				}
+            }
+			return true;
 		}
 		/// <summary>
 		/// </summary>
