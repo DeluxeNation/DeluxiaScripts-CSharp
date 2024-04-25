@@ -1082,6 +1082,23 @@ namespace Deluxia {
 				}
 				return result;
 			}
+			public List<T> GetPath(IList<int> branch){
+				List<T> result = new(){parent};
+				if(branch.Count == 0) {
+					return result;
+				}
+				//UnityEngine.Debug.Log(result.SerializeToString());
+				children[branch[0]].GetPathContinue(1,branch,result);
+				
+				return result;
+			}
+			private void GetPathContinue(int depth,IList<int> branch, List<T> soFar){
+				soFar.Add(parent);
+				//UnityEngine.Debug.Log(soFar.SerializeToString());
+				if(children.Count != 0 && branch.Count > depth){
+					children[branch[depth]].GetPathContinue(depth + 1,branch,soFar);
+				}
+			}
 			public string Serialize(Func<T,bool> condition) {
 				string result = parent.ToString();
 				for(int i = 0;i < children.Count;i++) {
