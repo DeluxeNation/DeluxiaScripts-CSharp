@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Deluxia.Random
 {
+    /// <summary>
+    /// Source: https://stackoverflow.com/questions/19512210/how-to-save-the-state-of-a-random-generator-in-c
+    /// </summary>
     public sealed class DeluxiaRandom
     {
         private int _seed;
         private int _INext;
         private int _INextP;
+        private bool disableAdvancement = false;
         public long timesRandomized{get;private set;}
         private int[] _seedArray = new int[56];
         private readonly bool debug = false;
@@ -82,6 +86,12 @@ namespace Deluxia.Random
                 #endif
             }
             this.debug = debug;
+        }
+        public void DisableAdvancement(){
+            disableAdvancement = true;
+        }
+        public void EnableAdvancement(){
+            disableAdvancement = false;
         }
 
         /// <summary>
@@ -564,37 +574,68 @@ namespace Deluxia.Random
 
         private int NextSample()
         {
-            int locINext = _INext;
-            int locINextp = _INextP;
-            if (++locINext >= 56)
-            {
-                locINext = 1;
-            }
-            if (++locINextp >= 56)
-            {
-                locINextp = 1;
-            }
-            int retVal = _seedArray[locINext] - _seedArray[locINextp];
-            if (retVal == Int32.MaxValue)
-            {
-                retVal--;
-            }
-            if (retVal < 0)
-            {
-                retVal += Int32.MaxValue;
-            }
-            _seedArray[locINext] = retVal;
-            _INext = locINext;
-            _INextP = locINextp;
-            timesRandomized++;
-            if(debug){
+            if(disableAdvancement){
+                int locINext = _INext;
+                int locINextp = _INextP;
+                if (++locINext >= 56)
+                {
+                    locINext = 1;
+                }
+                if (++locINextp >= 56)
+                {
+                    locINextp = 1;
+                }
+                int retVal = _seedArray[locINext] - _seedArray[locINextp];
+                if (retVal == Int32.MaxValue)
+                {
+                    retVal--;
+                }
+                if (retVal < 0)
+                {
+                    retVal += Int32.MaxValue;
+                }
+                if(debug){
 #if UNITY_EDITOR
-                UnityEngine.Debug.Log(timesRandomized);
+                    UnityEngine.Debug.Log(timesRandomized + " Advancement Disabled");
 #else
-                Console.WriteLine(timesRandomized);
+                    Console.WriteLine(timesRandomized +  " Advancement Disabled");
 #endif
-			}
-			return retVal;
+                }
+                return retVal;
+            }
+            else{
+                int locINext = _INext;
+                int locINextp = _INextP;
+                if (++locINext >= 56)
+                {
+                    locINext = 1;
+                }
+                if (++locINextp >= 56)
+                {
+                    locINextp = 1;
+                }
+                int retVal = _seedArray[locINext] - _seedArray[locINextp];
+                if (retVal == Int32.MaxValue)
+                {
+                    retVal--;
+                }
+                if (retVal < 0)
+                {
+                    retVal += Int32.MaxValue;
+                }
+                _seedArray[locINext] = retVal;
+                _INext = locINext;
+                _INextP = locINextp;
+                timesRandomized++;
+                if(debug){
+    #if UNITY_EDITOR
+                    UnityEngine.Debug.Log(timesRandomized);
+    #else
+                    Console.WriteLine(timesRandomized);
+    #endif
+                }
+                return retVal;
+            }
         }
 
         public int[] GetState()

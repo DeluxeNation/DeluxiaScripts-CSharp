@@ -1195,6 +1195,9 @@ namespace Deluxia {
 				catch(IndexOutOfRangeException) {
 					throw new IndexOutOfRangeException($"{i.SerializeToString()} could not be found.");
 				}
+				catch(ArgumentOutOfRangeException){
+					throw new IndexOutOfRangeException($"{i.SerializeToString()} could not be found.");
+				}
 			}
 		}
 	}
