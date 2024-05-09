@@ -534,6 +534,9 @@ namespace Deluxia {
 			if(obj == null || obj.Equals(default(T))) {
 				return default;
 			}
+			if(typeof(T).IsValueType){
+				return obj;
+			}
 			var inst = obj.GetType().GetMethod("MemberwiseClone",System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
 			return (T)inst.Invoke(obj,null);
 		}
