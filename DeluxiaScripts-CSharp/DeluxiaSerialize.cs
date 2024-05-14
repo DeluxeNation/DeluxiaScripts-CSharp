@@ -47,14 +47,20 @@ namespace Deluxia {
             if(data == null || data.Length == 0) {
                 return "";
             }
-            char[] toSend = new char[data.Length];
-            for(int i = 0;i < toSend.Length;i++) {
-                toSend[i] = (char)data[i];
+            List<char> toSend = new();
+            for(int i = 0;i < data.Length;i++) {
+                toSend.Add((char)data[i]);
             }
-            if(compressed && data[0] != 0) {
-                return new string(toSend).Unzip();
+            if(compressed) {
+                if(data[0] != 0){
+                    return new string(toSend.ToArray()).Unzip();
+                }
+                else{
+                    toSend.RemoveAt(0);
+                    //UnityEngine.Debug.Log(toSend.SerializeToString());
+                }
             }
-            return new string(toSend);
+            return new string(toSend.ToArray());
         }
         /// <summary>
         /// Converts a string[] to a byte[]
@@ -285,15 +291,19 @@ namespace Deluxia {
                 List<byte> data = new();
                 bool end = false;
                 while(!end) {
-                    if(code.Contains(',') && code.CountElementInString(";") <= 1) {
-                        //Debug.Log("END");
+                    if(!code.Contains(',') && code.CountElementInString(";") <= 1) {
+                        //UnityEngine.Debug.Log("END");
                         trueEnd = true;
                         end = true;
                     }
                     else {
                         end = code.IndexOf(";") < code.IndexOf(",") || !code.Contains(',');
+                        if(end){
+                            //UnityEngine.Debug.Log("END");
+                        }
                     }
                     if(code.Length == 0) {
+                        //UnityEngine.Debug.Log("END");
                         end = true;
                         trueEnd = true;
                         break;
@@ -305,12 +315,14 @@ namespace Deluxia {
                     }
                     string stopAt = end ? ";" : ",";
                     //Debug.Log(stopAt+code);
+                    //UnityEngine.Debug.Log(code[..code.IndexOf(stopAt)]);
                     data.Add(byte.Parse(code[..code.IndexOf(stopAt)]));
                     code = code.Remove(0,code.IndexOf(stopAt) + 1);
                     //Debug.Log(end);
                 }
                 toSend.Add(data.ToArray());
             }
+            UnityEngine.Debug.Log(toSend.ToArray().SerializeToString());
             return toSend.ToArray();
         }
         /// <summary>

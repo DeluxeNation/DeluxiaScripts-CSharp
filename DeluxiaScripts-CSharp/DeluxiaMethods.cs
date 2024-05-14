@@ -1062,28 +1062,37 @@ namespace Deluxia {
 				return result;
 			}
 			public string Serialize(IList<int> branch) {
-				
-				string result = parent.ToString();
-				if(branch.Count == 0) {
+				try{
+					string result = parent.ToString();
+					if(branch.Count == 0) {
+						return result;
+					}
+					result += children[branch[0]].SerializeContinue(1,branch);
 					return result;
 				}
-				result += children[branch[0]].SerializeContinue(1,branch);
-				return result;
+				catch (ArgumentOutOfRangeException){
+					throw new Exception($"Failed to find branch. Depth: 0\n{parent}: {children.Count}/{branch.SerializeToString()}");
+				}
 			}
 			private string SerializeContinue(int depth,IList<int> branch) {
-				string result = "\n";
-				string depthBars = "";
-				for(int i = 0;i < depth;i++) {
-					depthBars += "-";
+				try{
+					string result = "\n";
+					string depthBars = "";
+					for(int i = 0;i < depth;i++) {
+						depthBars += "-";
+					}
+					if(children.Count == 0) {
+						depthBars += "|";
+					}
+					result += depthBars + parent.ToString();
+					if(branch.Count > depth) {
+						result += children[branch[depth]].SerializeContinue(depth + 1,branch);
+					}
+					return result;
 				}
-				if(children.Count == 0) {
-					depthBars += "|";
+				catch (ArgumentOutOfRangeException){
+					throw new Exception($"Failed to find branch. Depth: {depth}\n{parent}: {children.Count}/{branch.SerializeToString()}");
 				}
-				result += depthBars + parent.ToString();
-				if(branch.Count > depth) {
-					result += children[branch[depth]].SerializeContinue(depth + 1,branch);
-				}
-				return result;
 			}
 			public List<T> GetPath(IList<int> branch){
 				List<T> result = new(){parent};
