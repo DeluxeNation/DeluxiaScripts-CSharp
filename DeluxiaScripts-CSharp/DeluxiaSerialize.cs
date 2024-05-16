@@ -322,7 +322,7 @@ namespace Deluxia {
                 }
                 toSend.Add(data.ToArray());
             }
-            UnityEngine.Debug.Log(toSend.ToArray().SerializeToString());
+            //UnityEngine.Debug.Log(toSend.ToArray().SerializeToString());
             return toSend.ToArray();
         }
         /// <summary>

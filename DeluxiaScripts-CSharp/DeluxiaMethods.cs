@@ -1311,4 +1311,27 @@ namespace Deluxia {
 			return secondToFirst.TryGetValue(second,out first);
 		}
 	}
+	public class LapStopwatch: Stopwatch{
+		private readonly List<TimeSpan> laps = new();
+		public LapStopwatch(){
+			
+		}
+		public void Lap(){
+			if(!IsRunning){
+				Start();
+			}
+			laps.Add(Elapsed);
+		}
+		public List<TimeSpan> GetLaps(){
+			return laps;
+		}
+		public new void Restart(){
+			base.Restart();
+			laps.Clear();
+		}
+		public new void Reset(){
+			base.Reset();
+			laps.Clear();
+		}
+	}
 }
