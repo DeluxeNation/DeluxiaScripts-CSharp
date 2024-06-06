@@ -887,11 +887,14 @@ namespace Deluxia {
 		/// <exception cref="TimeoutException"></exception>
 		/// <returns></returns>
 		public static async Task<bool> WaitWhile(Func<bool> condition,int frequency = 25,int timeout = -1) {
+			//int thisID = ID++;
+			//UnityEngine.Debug.Log("WAIT FOR "+thisID);
 			if(timeout == 0) {
 				while(condition()) {
 					await Task.Delay(frequency);
 					//times++;
 				}
+				//UnityEngine.Debug.Log("DONE "+thisID);
 				return true;
 			}
 			else {
@@ -902,6 +905,7 @@ namespace Deluxia {
 					//times++;
 				}
 				time.Stop();
+				//UnityEngine.Debug.Log("DONE "+thisID);
 				return time.ElapsedMilliseconds < timeout;
 			}
 		}
@@ -914,13 +918,17 @@ namespace Deluxia {
 		/// <param name="frequency">The frequency at which the condition will be checked.</param>
 		/// <param name="timeout">The timeout in milliseconds.</param>
 		/// <returns></returns>
+		//private static int ID = 0;
 		public static async Task<bool> WaitUntil(Func<bool> condition,int frequency = 25,uint timeout = 0) {
 			//ulong times = 0;
+			//int thisID = ID++;
+			//UnityEngine.Debug.Log("WAIT FOR "+thisID);
 			if(timeout == 0) {
 				while(!condition()) {
 					await Task.Delay(frequency);
 					//times++;
 				}
+				//UnityEngine.Debug.Log("DONE "+thisID);
 				return true;
 			}
 			else {
@@ -931,6 +939,7 @@ namespace Deluxia {
 					//times++;
 				}
 				time.Stop();
+				//UnityEngine.Debug.Log("DONE "+thisID);
 				return time.ElapsedMilliseconds < timeout;
 			}
 		}
