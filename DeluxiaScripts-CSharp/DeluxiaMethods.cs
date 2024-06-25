@@ -952,6 +952,13 @@ namespace Deluxia {
 			}
 			return false;
 		}
+		public static bool TryFirst<T>(this IEnumerable<T> source,Func<T,bool> func,out T value) {
+			value =  source.FirstOrDefault(func);
+			if(value != null){
+				return true;
+			}
+			return false;
+		}
 		public static string ToRoman(this int number) {
 			if((number < 0) || (number > 3999))
 				throw new ArgumentOutOfRangeException(nameof(number));
