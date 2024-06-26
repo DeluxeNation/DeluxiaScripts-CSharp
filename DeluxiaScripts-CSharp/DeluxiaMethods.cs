@@ -953,9 +953,14 @@ namespace Deluxia {
 			return false;
 		}
 		public static bool TryFirst<T>(this IEnumerable<T> source,Func<T,bool> func,out T value) {
-			value =  source.FirstOrDefault(func);
-			if(value != null){
-				return true;
+			try{
+				value =  source.FirstOrDefault(func);
+				if(value != null){
+					return true;
+				}
+			}
+			catch(ArgumentNullException){
+				value = default;
 			}
 			return false;
 		}
