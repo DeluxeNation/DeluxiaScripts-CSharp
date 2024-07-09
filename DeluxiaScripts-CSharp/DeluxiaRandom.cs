@@ -666,6 +666,13 @@ namespace Deluxia.Random
                 _seedArray[i - 3] = saveState[i];
             }
         }
+        /// <summary>
+        /// Returns the seed first, then times randomized
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString() {
+            return $"({Seed}): {timesRandomized}";
+        }
 
     }
 }
