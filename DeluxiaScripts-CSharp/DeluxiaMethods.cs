@@ -964,6 +964,18 @@ namespace Deluxia {
 			}
 			return false;
 		}
+		public static bool TryLast<T>(this IEnumerable<T> source,Func<T,bool> func,out T value) {
+			try{
+				value =  source.LastOrDefault(func);
+				if(value != null){
+					return true;
+				}
+			}
+			catch(ArgumentNullException){
+				value = default;
+			}
+			return false;
+		}
 		public static string ToRoman(this int number) {
 			if((number < 0) || (number > 3999))
 				throw new ArgumentOutOfRangeException(nameof(number));
