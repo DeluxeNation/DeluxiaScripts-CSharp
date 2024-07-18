@@ -191,7 +191,7 @@ namespace Deluxia {
         /// <summary>
         /// Converts a collection to a readable string.
         /// </summary>
-        public static string SerializeToString<T>(this IEnumerable<T> encoded) {
+        public static string SerializeToString<T>(this IEnumerable<T> encoded,string seperator = ",",string ending = ";") {
             if(encoded == null) {
                 return "null";
             }
@@ -203,10 +203,10 @@ namespace Deluxia {
             //int times = 0;
             foreach(T val in encoded) {
                 //Debug.Log("Time "+ (times++));
-                toSend += val + ",";
+                toSend += val + seperator;
             }
             toSend = toSend[..^1];
-            toSend += ";";
+            toSend += ending;
             return toSend;
         }
         /// <summary>
