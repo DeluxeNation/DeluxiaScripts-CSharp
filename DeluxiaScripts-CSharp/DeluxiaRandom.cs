@@ -12,9 +12,10 @@ namespace Deluxia.Random
         private int _INext;
         private int _INextP;
         private bool disableAdvancement = false;
-        public long timesRandomized{get;private set;}
+        public int timesRandomized{get;private set;}
         private int[] _seedArray = new int[56];
         private readonly bool debug = false;
+        public event Action beforeState;
 
         /// <summary>
         /// The current seed of this instance.
@@ -93,7 +94,6 @@ namespace Deluxia.Random
         public void EnableAdvancement(){
             disableAdvancement = false;
         }
-
         /// <summary>
         /// Resets this instance using it's current seed.
         /// This means that the RNG will start over again,
@@ -125,9 +125,12 @@ namespace Deluxia.Random
         /// Reseeds this instance using a given integer seed.
         /// </summary>
         /// <param name="seed"></param>
-        public void Reseed(int seed)
+        public void Reseed(int seed, int times = 0)
         {
             this.Seed = seed;
+            for(int i = 0; i < times; i++){
+                NextSample();
+            }
         }
 
         public int NextInteger()
@@ -571,7 +574,6 @@ namespace Deluxia.Random
             NextOdds(a, b, buffer);
             return buffer;
         }
-
         private int NextSample()
         {
             if(disableAdvancement){
@@ -596,7 +598,7 @@ namespace Deluxia.Random
                 }
                 if(debug){
 #if UNITY_EDITOR
-                    UnityEngine.Debug.Log(timesRandomized + " Advancement Disabled");
+                    UnityEngine.Debug.Log(timesRandomized+ " Advancement Disabled");
 #else
                     Console.WriteLine(timesRandomized +  " Advancement Disabled");
 #endif
@@ -604,6 +606,7 @@ namespace Deluxia.Random
                 return retVal;
             }
             else{
+                beforeState?.Invoke();
                 int locINext = _INext;
                 int locINextp = _INextP;
                 if (++locINext >= 56)
@@ -637,33 +640,34 @@ namespace Deluxia.Random
                 return retVal;
             }
         }
-
         public int[] GetState()
         {
-            int[] state = new int[59];
+            int[] state = new int[60];
             state[0] = _seed;
             state[1] = _INext;
             state[2] = _INextP;
-            for (int i = 3; i < this._seedArray.Length; i++)
+            state[3] = timesRandomized;
+            for (int i = 4; i < this._seedArray.Length; i++)
             {
-                state[i] = _seedArray[i - 3];
+                state[i] = _seedArray[i - 4];
             }
             return state;
         }
 
         public void LoadState(int[] saveState)
         {
-            if (saveState.Length != 59)
+            if (saveState.Length != 60)
             {
                 throw new Exception("GrimoireRandom state was corrupted!");
             }
             _seed = saveState[0];
             _INext = saveState[1];
             _INextP = saveState[2];
-            _seedArray = new int[59];
-            for (int i = 3; i < this._seedArray.Length; i++)
+            timesRandomized = saveState[3];
+            _seedArray = new int[56];
+            for (int i = 4; i < 60; i++)
             {
-                _seedArray[i - 3] = saveState[i];
+                _seedArray[i - 4] = saveState[i];
             }
         }
         /// <summary>
