@@ -922,7 +922,10 @@ namespace Deluxia {
 		public static async Task<bool> WaitUntil(Func<bool> condition,int frequency = 25,uint timeout = 0) {
 			//ulong times = 0;
 			//int thisID = ID++;
-			//UnityEngine.Debug.Log("WAIT FOR "+thisID);
+			if(condition()){
+				return true;
+			}
+			//UnityEngine.Debug.Log("WAIT FOR ");
 			if(timeout == 0) {
 				while(!condition()) {
 					await Task.Delay(frequency);
