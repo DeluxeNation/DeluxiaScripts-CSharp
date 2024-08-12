@@ -14,7 +14,7 @@ namespace Deluxia.Random
         private bool disableAdvancement = false;
         public int timesRandomized{get;private set;}
         private int[] _seedArray = new int[56];
-        private readonly bool debug = false;
+        private bool debug = false;
         public event Action beforeState;
 
         /// <summary>
@@ -678,5 +678,8 @@ namespace Deluxia.Random
             return $"({Seed}): {timesRandomized}";
         }
 
+        internal void EnableDebug(bool val) {
+            debug = val;
+        }
     }
 }
