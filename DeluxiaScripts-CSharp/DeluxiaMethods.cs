@@ -1030,6 +1030,11 @@ namespace Deluxia {
 					.Select(x => matrix[rowNumber,x])
 					.ToArray();
 		}
+		public static bool IsOrdered<T>(this IEnumerable<T> collection, IComparer<T> comparer = null) where T: IComparable<T> {
+			comparer ??= Comparer<T>.Default;
+			return collection.Zip(collection.Skip(1),(a,b) => new { a,b })
+						.All(x=>comparer.Compare(x.a,x.b) <= 0);
+		}
 		public class Branch<T>: IList<Branch<T>> {
 			public T parent;
 			private readonly List<Branch<T>> children;
@@ -1083,7 +1088,7 @@ namespace Deluxia {
 			}
 			private string SerializeContinue(int depth) {
 				string result = "\n";
-				string depthBars = "";
+				string depthBars = "|";
 				for(int i = 0;i < depth;i++) {
 					depthBars += "-";
 				}
@@ -1113,7 +1118,7 @@ namespace Deluxia {
 			private string SerializeContinue(int depth,IList<int> branch) {
 				try{
 					string result = "\n";
-					string depthBars = "";
+					string depthBars = "|";
 					for(int i = 0;i < depth;i++) {
 						depthBars += "-";
 					}
@@ -1158,7 +1163,7 @@ namespace Deluxia {
 				
 				if(condition.Invoke(parent)) {
 					string result = "\n";
-					string depthBars = "";
+					string depthBars = "|";
 					for(int i = 0;i < depth;i++) {
 						depthBars += "-";
 					}
