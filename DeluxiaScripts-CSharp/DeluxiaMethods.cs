@@ -692,6 +692,24 @@ namespace Deluxia {
 			return true;
 		}
 		/// <summary>
+		/// Checks if every item is the same. Returns true if the collection is null or empty
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="t"></param>
+		/// <returns></returns>
+		public static bool AllDuplicates<T>(this IEnumerable<T> t) {
+			if(t == null || t.Count() <= 1){
+				return true;
+			}
+			T val = t.First();
+			foreach(T item in t.Skip(1)) {
+				if(!item.Equals(val)){
+					return false;
+				}
+            }
+			return true;
+		}
+		/// <summary>
 		/// </summary>
 		/// <param name="sentence"></param>
 		/// <returns>The first word of sentence.</returns>
