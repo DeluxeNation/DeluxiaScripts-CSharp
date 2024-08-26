@@ -305,12 +305,12 @@ namespace Deluxia {
 		/// <param name="array"></param>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public static List<T> Condense<T>(this List<T>[] array) {
+		public static List<T> Condense<T>(this IEnumerable<T>[] array) {
 			if(array == null) {
 				return null;
 			}
-			List<T> toSend = new List<T>();
-			foreach(List<T> ar in array) {
+			List<T> toSend = new();
+			foreach(IEnumerable<T> ar in array) {
 				toSend.AddRange(ar);
 			}
 			return toSend;
@@ -347,12 +347,12 @@ namespace Deluxia {
 		/// <param name="list"></param>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public static List<T> Condense<T>(this List<List<T>> list) {
+		public static List<T> Condense<T>(this IEnumerable<IEnumerable<T>> list) {
 			if(list == null) {
 				return null;
 			}
-			List<T> toSend = new List<T>();
-			foreach(List<T> ar in list) {
+			List<T> toSend = new();
+			foreach(IEnumerable<T> ar in list) {
 				toSend.AddRange(ar);
 			}
 			return toSend;
