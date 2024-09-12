@@ -877,11 +877,24 @@ namespace Deluxia {
 				return numB - numA;
 			}
 		}
-		public static void Swap<T>(IList<T> list,int indexA,int indexB) {
+		public static void Swap<T>(this IList<T> list,int indexA,int indexB) {
 			T tmp = list[indexA];
 			list[indexA] = list[indexB];
 			list[indexB] = tmp;
 		}
+		public static void Move<T>(this IList<T> list, int index, int to){
+			T ob = list[index];
+			list.RemoveAt(index);
+			list.Insert(to,ob);
+		}	
+		public static void Move<T>(this IList<T> list, T item, int to){
+			if(list.Contains(item)){
+				int index = list.IndexOf(item);
+				T ob = list[index];
+				list.RemoveAt(index);
+				list.Insert(to,ob);
+			}
+		}	
 		public static string ReplaceFirst(this string text,string search,string replace) {
 			int pos = text.IndexOf(search);
 			if(pos < 0) {
@@ -1393,4 +1406,5 @@ namespace Deluxia {
 			laps.Clear();
 		}
 	}
+	
 }
