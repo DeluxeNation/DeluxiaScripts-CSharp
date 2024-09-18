@@ -956,7 +956,7 @@ namespace Deluxia {
 			if(condition()){
 				return true;
 			}
-			//UnityEngine.Debug.Log("WAIT FOR ");
+			//UnityEngine.Debug.Log("WAIT FOR "+thisID);
 			if(timeout == 0) {
 				while(!condition()) {
 					await Task.Delay(frequency);

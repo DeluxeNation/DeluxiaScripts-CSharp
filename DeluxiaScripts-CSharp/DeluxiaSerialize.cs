@@ -164,7 +164,7 @@ namespace Deluxia {
         /// <summary>
         /// Converts a T[][] to a readable string.
         /// </summary>
-        public static string SerializeToString<T>(this T[][] encoded) {
+        public static string SerializeToString<T>(this T[][] encoded,string seperator = ",",string ending = ";") {
             if(encoded == null || encoded.Length == 0) {
                 return "null";
             }
@@ -175,15 +175,15 @@ namespace Deluxia {
                     break;
                 }
                 if(top.Length == 0) {
-                    toSend += ";";
+                    toSend += ending;
                     spot++;
                     continue;
                 }
                 foreach(T val in top) {
-                    toSend += val + ",";
+                    toSend += val + seperator;
                 }
                 toSend = toSend[..^1];
-                toSend += ";";
+                toSend += ending;
                 spot++;
             }
             return toSend;
