@@ -1,3 +1,4 @@
+//#define DEBUG_RANDOM
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,10 @@ namespace Deluxia.Random
         private int[] _seedArray = new int[56];
         private bool debug = false;
         public event Action beforeState;
+        #if DEBUG_RANDOM
+        private static uint totalID = 0;
+        private uint ID;
+        #endif
 
         /// <summary>
         /// The current seed of this instance.
@@ -28,6 +33,9 @@ namespace Deluxia.Random
             }
             set
             {
+                #if DEBUG_RANDOM
+                UnityEngine.Debug.Log("Reseeding ID:"+ID);
+                #endif
                 _seed = value;
                 int subtraction = (_seed == Int32.MinValue) ? Int32.MaxValue : Math.Abs(_seed);
                 int mj = 0x9a4ec86 - subtraction;
@@ -60,18 +68,19 @@ namespace Deluxia.Random
             }
         }
 
-        public DeluxiaRandom(bool debug = false)
-            // Used to generate a varying seed, regardless of close-frequency allocation
-            : this(Guid.NewGuid().GetHashCode())
-        { this.debug = debug;}
+        public DeluxiaRandom(bool debug = false) : this(Guid.NewGuid().GetHashCode()){ 
+            this.debug = debug;
+        }
 
-        public DeluxiaRandom(string seed,bool debug = false)
-            : this(seed.GetHashCode())
-            
-        { this.debug = debug;}
+        public DeluxiaRandom(string seed,bool debug = false) : this(seed.GetHashCode()){
+            this.debug = debug;
+        }
 
-        public DeluxiaRandom(int[] saveState,bool debug = false)
-        {
+        public DeluxiaRandom(int[] saveState,bool debug = false) {
+            #if DEBUG_RANDOM
+            ID = totalID++;
+            UnityEngine.Debug.Log("Creating new random ID:"+ID);
+            #endif
             LoadState(saveState);
             this.debug = debug;
         }
@@ -79,6 +88,10 @@ namespace Deluxia.Random
         public DeluxiaRandom(int seed,bool debug = false)
         {
             Seed = seed;
+            #if DEBUG_RANDOM
+            ID = totalID++;
+            UnityEngine.Debug.Log("Creating new random ID:"+ID);
+            #endif
             if(debug) {
                 #if UNITY_EDITOR
                 UnityEngine.Debug.Log("Random seed set to " + seed);
@@ -632,7 +645,14 @@ namespace Deluxia.Random
                 timesRandomized++;
                 if(debug){
     #if UNITY_EDITOR
-                    UnityEngine.Debug.Log(timesRandomized);
+                #if DEBUG_RANDOM
+                UnityEngine.Debug.Log($"{timesRandomized} ID:{ID} {GameScript.main.GetThisTurnLog(true).SerializeToString()}");
+                if(timesRandomized == 414){
+                    GetState();
+                }
+                #else
+                UnityEngine.Debug.Log($"{timesRandomized} {GameScript.main.GetThisTurnLog(true).SerializeToString()}");
+                #endif
     #else
                     Console.WriteLine(timesRandomized);
     #endif
@@ -647,10 +667,13 @@ namespace Deluxia.Random
             state[1] = _INext;
             state[2] = _INextP;
             state[3] = timesRandomized;
-            for (int i = 4; i < this._seedArray.Length; i++)
+            for (int i = 4; i < this._seedArray.Length+4; i++)
             {
                 state[i] = _seedArray[i - 4];
             }
+            #if DEBUG_RANDOM
+                UnityEngine.Debug.Log("Get state ID:"+ID + "\n"+state.SerializeToString("\n"));
+            #endif
             return state;
         }
 
@@ -660,6 +683,9 @@ namespace Deluxia.Random
             {
                 throw new Exception("GrimoireRandom state was corrupted!");
             }
+            #if DEBUG_RANDOM
+                UnityEngine.Debug.Log("Load state ID:"+ID + "\n"+saveState.SerializeToString("\n"));
+            #endif
             _seed = saveState[0];
             _INext = saveState[1];
             _INextP = saveState[2];
