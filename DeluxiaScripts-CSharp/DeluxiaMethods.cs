@@ -1066,7 +1066,18 @@ namespace Deluxia {
 			return collection.Zip(collection.Skip(1),(a,b) => new { a,b })
 						.All(x=>comparer.Compare(x.a,x.b) <= 0);
 		}
-		public class Branch<T>: IList<Branch<T>> {
+
+        public static int RangeCheck(this int toCheck, int min, int max) {
+            if(toCheck < min){
+				return min;
+			}
+			else if(toCheck > max){
+				return max;
+			}
+			return toCheck;
+        }
+
+        public class Branch<T>: IList<Branch<T>> {
 			public T parent;
 			private readonly List<Branch<T>> children;
 
