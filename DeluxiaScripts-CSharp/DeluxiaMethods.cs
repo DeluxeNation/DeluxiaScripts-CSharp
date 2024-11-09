@@ -884,15 +884,20 @@ namespace Deluxia {
 		}
 		public static void Move<T>(this IList<T> list, int index, int to){
 			T ob = list[index];
+			if(to >= index){
+				to--;
+			}
 			list.RemoveAt(index);
 			list.Insert(to,ob);
 		}	
 		public static void Move<T>(this IList<T> list, T item, int to){
 			if(list.Contains(item)){
 				int index = list.IndexOf(item);
-				T ob = list[index];
+				if(to >= index){
+					to--;
+				}
 				list.RemoveAt(index);
-				list.Insert(to,ob);
+				list.Insert(to,item);
 			}
 		}	
 		public static string ReplaceFirst(this string text,string search,string replace) {
