@@ -1300,6 +1300,31 @@ namespace Deluxia {
 				}
 			}
 		}
+		/// <summary>
+		/// NOTE: To make the class more efficent, the newest elements are at the end, the oldest are at 0
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		public class FixedSizedList<T> : List<T>{
+			public int Size { get; private set; }
+
+			public FixedSizedList(int size): base(){
+				Size = size;
+				Capacity = size+1;
+			}
+			public FixedSizedList(int size, IEnumerable<T> collection): base(collection){
+				Size = size;
+				while (Count > Size){
+					RemoveAt(0);
+				}
+				Capacity = size+1;
+			}
+			public new void Add(T obj){
+				base.Add(obj);
+				while (Count > Size){
+					RemoveAt(0);
+				}
+			}
+		}
 	}
 	public class DictionaryQueue<TKey, TValue>: IDictionary<TKey,TValue> {
 		//private lis
