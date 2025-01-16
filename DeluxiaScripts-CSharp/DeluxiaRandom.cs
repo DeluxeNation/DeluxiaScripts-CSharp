@@ -101,6 +101,9 @@ namespace Deluxia.Random
             }
             this.debug = debug;
         }
+        public static int GenerateSeed(){
+            return Guid.NewGuid().GetHashCode();
+        }
         public void DisableAdvancement(){
             disableAdvancement = true;
         }
@@ -646,15 +649,12 @@ namespace Deluxia.Random
                 if(debug){
     #if UNITY_EDITOR
                 #if DEBUG_RANDOM
-                UnityEngine.Debug.Log($"{timesRandomized} ID:{ID} {GameScript.main.GetThisTurnLog(true).SerializeToString()}");
-                if(timesRandomized == 414){
-                    GetState();
-                }
-                #else
-                UnityEngine.Debug.Log($"{timesRandomized} {GameScript.main.GetThisTurnLog(true).SerializeToString()}");
+                UnityEngine.Debug.Log($"{timesRandomized} ID:{ID}");
                 #endif
     #else
-                    Console.WriteLine(timesRandomized);
+                #if DEBUG_RANDOM
+                Console.WriteLine(timesRandomized);
+                #endif
     #endif
                 }
                 return retVal;
