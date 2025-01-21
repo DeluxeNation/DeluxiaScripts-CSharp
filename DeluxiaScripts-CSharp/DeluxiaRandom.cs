@@ -701,7 +701,7 @@ namespace Deluxia.Random
         /// </summary>
         /// <returns></returns>
         public override string ToString() {
-            return $"({Seed}): {timesRandomized}";
+            return $"({Seed}): Count: {timesRandomized}";
         }
 
         internal void EnableDebug(bool val) {
