@@ -1447,5 +1447,39 @@ namespace Deluxia {
 			laps.Clear();
 		}
 	}
-	
+	public class DeluxiaEvent<TKey,TArg> {
+		private Dictionary<TKey,Action<TArg>> dictionary;
+		public DeluxiaEvent() {
+			dictionary = new();
+		}
+		public void Add(TKey key,Action<TArg> func) {
+			dictionary[key] = func;
+		}
+		public void Remove(TKey key) {
+			dictionary.Remove(key);
+		}
+		public void Invoke(TArg args) {
+			foreach(var kvp in dictionary) {
+				kvp.Value.Invoke(args);
+			}
+		}
+	}
+	public class DeluxiaEvent<TKey> {
+		private Dictionary<TKey,Action> dictionary;
+		public DeluxiaEvent() {
+			dictionary = new();
+		}
+		public void Add(TKey key,Action func) {
+			dictionary[key] = func;
+		}
+		public void Remove(TKey key) {
+			dictionary.Remove(key);
+		}
+		public void Invoke() {
+			foreach(var kvp in dictionary) {
+				kvp.Value.Invoke();
+			}
+		}
+	}
+
 }
