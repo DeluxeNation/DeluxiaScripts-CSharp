@@ -991,7 +991,7 @@ namespace Deluxia {
 			}
 			return false;
 		}
-		public static bool TryFirst<T>(this IEnumerable<T> source,Func<T,bool> func,out T value) {
+		public static bool TryFirst<T>(this IEnumerable<T> source,Func<T,bool> func,out T value) where T: class {
 			try{
 				value =  source.FirstOrDefault(func);
 				if(value != null){
@@ -1002,6 +1002,15 @@ namespace Deluxia {
 				value = default;
 			}
 			return false;
+		}
+		public static bool TryFirstValue<T>(this IEnumerable<T> source,Func<T,bool> func,out T value) where T: struct {
+			if(source.Any(func)){
+				value =  source.FirstOrDefault(func);
+				return true;
+			}
+			value = default;
+			return false;
+
 		}
 		public static bool TryLast<T>(this IEnumerable<T> source,Func<T,bool> func,out T value) {
 			try{
@@ -1463,6 +1472,7 @@ namespace Deluxia {
 				kvp.Value.Invoke(args);
 			}
 		}
+		public IEnumerable<TKey> Keys => dictionary.Keys;
 	}
 	public class DeluxiaEvent<TKey> {
 		private Dictionary<TKey,Action> dictionary;
@@ -1480,6 +1490,7 @@ namespace Deluxia {
 				kvp.Value.Invoke();
 			}
 		}
+		public IEnumerable<TKey> Keys => dictionary.Keys;
 	}
 
 }
