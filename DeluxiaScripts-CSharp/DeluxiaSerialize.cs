@@ -182,7 +182,7 @@ namespace Deluxia {
                 foreach(T val in top) {
                     toSend += val + seperator;
                 }
-                toSend = toSend[..^1];
+                toSend = toSend[..^seperator.Length];
                 toSend += ending;
                 spot++;
             }
@@ -205,7 +205,7 @@ namespace Deluxia {
                 //Debug.Log("Time "+ (times++));
                 toSend += val + seperator;
             }
-            toSend = toSend[..^1];
+            toSend = toSend[..^seperator.Length];
             toSend += ending;
             return toSend;
         }

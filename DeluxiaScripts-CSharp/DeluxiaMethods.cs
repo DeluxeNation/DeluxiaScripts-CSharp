@@ -1458,36 +1458,68 @@ namespace Deluxia {
 	}
 	public class DeluxiaEvent<TKey,TArg> {
 		private Dictionary<TKey,Action<TArg>> dictionary;
+		private HashSet<TKey> removeLater;
+		private bool invoking;
 		public DeluxiaEvent() {
 			dictionary = new();
+			removeLater = new();
 		}
 		public void Add(TKey key,Action<TArg> func) {
 			dictionary[key] = func;
 		}
 		public void Remove(TKey key) {
-			dictionary.Remove(key);
+			if(invoking){
+				removeLater.Add(key);
+			}
+			else{
+				dictionary.Remove(key);
+			}
 		}
 		public void Invoke(TArg args) {
-			foreach(var kvp in dictionary) {
-				kvp.Value.Invoke(args);
+			invoking = true;
+			foreach(var kvp in dictionary.Values) {
+				kvp.Invoke(args);
+			}
+			invoking = false;
+			if(removeLater.Any()){
+				foreach(var kvp in removeLater) {
+					dictionary.Remove(kvp);
+				}
+				removeLater.Clear();
 			}
 		}
 		public IEnumerable<TKey> Keys => dictionary.Keys;
 	}
 	public class DeluxiaEvent<TKey> {
 		private Dictionary<TKey,Action> dictionary;
+		private HashSet<TKey> removeLater;
+		private bool invoking;
 		public DeluxiaEvent() {
 			dictionary = new();
+			removeLater = new();
 		}
 		public void Add(TKey key,Action func) {
 			dictionary[key] = func;
 		}
 		public void Remove(TKey key) {
-			dictionary.Remove(key);
+			if(invoking){
+				removeLater.Add(key);
+			}
+			else{
+				dictionary.Remove(key);
+			}
 		}
 		public void Invoke() {
-			foreach(var kvp in dictionary) {
-				kvp.Value.Invoke();
+			invoking = true;
+			foreach(var kvp in dictionary.Values) {
+				kvp.Invoke();
+			}
+			invoking = false;
+			if(removeLater.Any()){
+				foreach(var kvp in removeLater) {
+					dictionary.Remove(kvp);
+				}
+				removeLater.Clear();
 			}
 		}
 		public IEnumerable<TKey> Keys => dictionary.Keys;
