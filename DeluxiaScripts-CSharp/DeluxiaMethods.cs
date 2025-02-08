@@ -1,3 +1,4 @@
+#undef ASYNC_DEBUG
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -945,7 +946,6 @@ namespace Deluxia {
 				return time.ElapsedMilliseconds < timeout;
 			}
 		}
-
 		/// <summary>
 		/// Blocks until condition is true or timeout occurs.
 		/// </summary>
@@ -954,20 +954,30 @@ namespace Deluxia {
 		/// <param name="frequency">The frequency at which the condition will be checked.</param>
 		/// <param name="timeout">The timeout in milliseconds.</param>
 		/// <returns></returns>
-		//private static int ID = 0;
+		#if ASYNC_DEBUG
+		private static int ID = 0;
+		#endif
 		public static async Task<bool> WaitUntil(Func<bool> condition,int frequency = 25,uint timeout = 0) {
-			//ulong times = 0;
-			//int thisID = ID++;
+			#if ASYNC_DEBUG
+			ulong times = 0;
+			int thisID = ID++;
+			#endif
 			if(condition()){
 				return true;
 			}
-			//UnityEngine.Debug.Log("WAIT FOR "+thisID);
+			#if ASYNC_DEBUG
+			UnityEngine.Debug.Log("WAIT FOR "+thisID);
+			#endif
 			if(timeout == 0) {
 				while(!condition()) {
 					await Task.Delay(frequency);
-					//times++;
+					#if ASYNC_DEBUG
+					times++;
+					#endif
 				}
-				//UnityEngine.Debug.Log("DONE "+thisID);
+				#if ASYNC_DEBUG
+				UnityEngine.Debug.Log("DONE "+thisID);
+				#endif
 				return true;
 			}
 			else {
@@ -975,10 +985,14 @@ namespace Deluxia {
 				time.Start();
 				while(!condition() && time.ElapsedMilliseconds < timeout) {
 					await Task.Delay(frequency);
-					//times++;
+					#if ASYNC_DEBUG
+					times++;
+					#endif
 				}
 				time.Stop();
-				//UnityEngine.Debug.Log("DONE "+thisID);
+				#if ASYNC_DEBUG
+				UnityEngine.Debug.Log("DONE "+thisID);
+				#endif
 				return time.ElapsedMilliseconds < timeout;
 			}
 		}
