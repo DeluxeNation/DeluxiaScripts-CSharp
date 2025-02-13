@@ -492,7 +492,13 @@ namespace Deluxia.Random
             Choose(items, buffer);
             return buffer;
         }
-
+        public T Choose<T>(List<T> items)
+        {
+            if(items.Count() == 0) {
+                return default;
+            }
+            return items[NextInteger(0, items.Count())];
+        }
         public T Choose<T>(IEnumerable<T> items)
         {
             if(items.Count() == 0) {
@@ -500,7 +506,37 @@ namespace Deluxia.Random
             }
             return items.ToList()[NextInteger(0, items.Count())];
         }
-
+        /// <summary>
+        /// Keeps choosing until it finds a match, throws InvalidOperationException if there is no match
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items"></param>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        public T ChooseUntil<T>(IEnumerable<T> items, Func<T,bool> condition){
+            List<T> itemsLeft = new(items);
+            T next;
+			while(itemsLeft.Any()){
+				next = Choose(itemsLeft);
+                itemsLeft.Remove(next);
+                if(condition.Invoke(next)){
+                    return next;
+                }
+			}
+            throw new InvalidOperationException("No match");
+        }
+        public T ChooseUntilOrDefault<T>(IEnumerable<T> items, Func<T,bool> condition){
+            List<T> itemsLeft = new(items);
+            T next;
+			while(itemsLeft.Any()){
+				next = Choose(itemsLeft);
+                itemsLeft.Remove(next);
+                if(condition.Invoke(next)){
+                    return next;
+                }
+			}
+            return default;
+        }
         public List<T> Choose<T>(IEnumerable<T> items, int quantity)
         {
             List<T> buffer = new(quantity);
