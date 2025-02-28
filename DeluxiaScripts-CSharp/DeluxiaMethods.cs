@@ -1503,6 +1503,7 @@ namespace Deluxia {
 			}
 		}
 		public IEnumerable<TKey> Keys => dictionary.Keys;
+		public int Count => dictionary.Count;
 	}
 	public class DeluxiaEvent<TKey> {
 		private Dictionary<TKey,Action> dictionary;
@@ -1537,6 +1538,7 @@ namespace Deluxia {
 			}
 		}
 		public IEnumerable<TKey> Keys => dictionary.Keys;
+		public int Count => dictionary.Count;
 	}
 
 }
