@@ -686,10 +686,14 @@ namespace Deluxia.Random
     #if UNITY_EDITOR
                 #if DEBUG_RANDOM
                 UnityEngine.Debug.Log($"{timesRandomized} ID:{ID}");
+                #else
+                UnityEngine.Debug.Log($"{timesRandomized}");
                 #endif
     #else
                 #if DEBUG_RANDOM
                 Console.WriteLine(timesRandomized);
+                #else
+                Console.WriteLine($"{timesRandomized}  ID:{ID}");
                 #endif
     #endif
                 }
