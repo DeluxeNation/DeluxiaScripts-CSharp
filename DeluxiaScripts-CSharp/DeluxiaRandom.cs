@@ -691,9 +691,10 @@ namespace Deluxia.Random
                 #endif
     #else
                 #if DEBUG_RANDOM
-                Console.WriteLine(timesRandomized);
-                #else
                 Console.WriteLine($"{timesRandomized}  ID:{ID}");
+                
+                #else
+                Console.WriteLine(timesRandomized);
                 #endif
     #endif
                 }
